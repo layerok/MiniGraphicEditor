@@ -16,7 +16,7 @@ namespace MiniEditor.Classes
         protected Color _borderColor;
         protected Color _fillColor;
         protected bool _selected;
-        protected float _thickness;
+        protected decimal _thickness;
 
         public PointF[] Points { 
             get
@@ -56,7 +56,7 @@ namespace MiniEditor.Classes
             }
         }
 
-        public float Thickness { 
+        public decimal Thickness { 
             get
             {
                 return _thickness;

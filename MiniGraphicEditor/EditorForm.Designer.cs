@@ -32,7 +32,7 @@
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
-            this.numericUpDown8 = new System.Windows.Forms.NumericUpDown();
+            this.thicknessSpinner = new System.Windows.Forms.NumericUpDown();
             this.fillColorButton = new System.Windows.Forms.Button();
             this.borderColorButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -54,7 +54,7 @@
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.thicknessSpinner)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
@@ -68,7 +68,7 @@
             this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.label8);
-            this.panel1.Controls.Add(this.numericUpDown8);
+            this.panel1.Controls.Add(this.thicknessSpinner);
             this.panel1.Controls.Add(this.fillColorButton);
             this.panel1.Controls.Add(this.borderColorButton);
             this.panel1.Controls.Add(this.label3);
@@ -118,24 +118,24 @@
             this.label8.TabIndex = 17;
             this.label8.Text = "Контур";
             // 
-            // numericUpDown8
+            // thicknessSpinner
             // 
-            this.numericUpDown8.Location = new System.Drawing.Point(20, 292);
-            this.numericUpDown8.Margin = new System.Windows.Forms.Padding(4);
-            this.numericUpDown8.Maximum = new decimal(new int[] {
+            this.thicknessSpinner.Location = new System.Drawing.Point(20, 292);
+            this.thicknessSpinner.Margin = new System.Windows.Forms.Padding(4);
+            this.thicknessSpinner.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.numericUpDown8.Name = "numericUpDown8";
-            this.numericUpDown8.Size = new System.Drawing.Size(80, 22);
-            this.numericUpDown8.TabIndex = 16;
-            this.numericUpDown8.Value = new decimal(new int[] {
+            this.thicknessSpinner.Name = "thicknessSpinner";
+            this.thicknessSpinner.Size = new System.Drawing.Size(80, 22);
+            this.thicknessSpinner.TabIndex = 16;
+            this.thicknessSpinner.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.numericUpDown8.ValueChanged += new System.EventHandler(this.updateEditorUIProps);
+            this.thicknessSpinner.ValueChanged += new System.EventHandler(this.updateThickness_ValueChanged);
             // 
             // fillColorButton
             // 
@@ -367,15 +367,15 @@
             this.Text = "Form1";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Shown += new System.EventHandler(this.EditorForm_Shown);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.EditorForm_Paint);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EditorForm_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.EditorForm_KeyUp);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EditorForm_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EditorForm_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EditorForm_MouseUp);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.thicknessSpinner)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
@@ -409,7 +409,7 @@
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.NumericUpDown numericUpDown8;
+        private System.Windows.Forms.NumericUpDown thicknessSpinner;
         private System.Windows.Forms.Button fillColorButton;
         private System.Windows.Forms.Button borderColorButton;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
