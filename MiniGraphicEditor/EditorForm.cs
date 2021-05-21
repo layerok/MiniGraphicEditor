@@ -25,6 +25,7 @@ namespace MiniEditor
             Editor = new Editor(this);
             Editor.registerFigure(typeof(Lightning));
             Editor.registerFigure(typeof(Arrow));
+            Editor.registerFigure(typeof(ArrowFlatEnd));
             Editor.init();
 
             figureButtons = new Button[Editor.registeredFigures.Length];
