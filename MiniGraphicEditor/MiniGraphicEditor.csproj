@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Classes\Editor.cs" />
     <Compile Include="Classes\Figure.cs" />
+    <Compile Include="Classes\Figures\Turn.cs" />
     <Compile Include="Classes\Figures\Hedgehog.cs" />
     <Compile Include="Classes\Figures\Butterfly.cs" />
     <Compile Include="Classes\Figures\Arrow.cs" />
