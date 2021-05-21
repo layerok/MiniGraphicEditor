@@ -48,7 +48,8 @@
   <ItemGroup>
     <Compile Include="Classes\Editor.cs" />
     <Compile Include="Classes\Figure.cs" />
-    <Compile Include="Classes\Lightning.cs" />
+    <Compile Include="Classes\Figures\Arrow.cs" />
+    <Compile Include="Classes\Figures\Lightning.cs" />
     <Compile Include="Classes\Resizer.cs" />
     <Compile Include="Classes\States.cs" />
     <Compile Include="Classes\UIProperties.cs" />
@@ -85,6 +86,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

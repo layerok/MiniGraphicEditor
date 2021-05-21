@@ -124,13 +124,13 @@ namespace MiniEditor.Classes
                     if (Editor.figures[i].Selected)
                     {
 
-                        for (k = 0; k < Editor.currentFigure.Points.Length; k++)
+                        for (k = 0; k < Editor.figures[i].Points.Length; k++)
                         {
-                            Editor.currentFigure.Points[k].Y = (Editor.pathsCopy[i][k].Y - w1.Y) * (initialSelectionHeight + dh.Y) / initialSelectionHeight;
-                            Editor.currentFigure.Points[k].Y += w1.Y;
-                            Editor.currentFigure.Points[k].X = Editor.pathsCopy[i][k].X;
+                            Editor.figures[i].Points[k].Y = (Editor.pathsCopy[i][k].Y - w1.Y) * (initialSelectionHeight + dh.Y) / initialSelectionHeight;
+                            Editor.figures[i].Points[k].Y += w1.Y;
+                            Editor.figures[i].Points[k].X = Editor.pathsCopy[i][k].X;
                         }
-                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.currentFigure.Points);
+                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.figures[i].Points);
                     }
                     form.Invalidate();
                 }
@@ -145,14 +145,14 @@ namespace MiniEditor.Classes
                 {
                     if (Editor.figures[i].Selected)
                     {
-                        for (k = 0; k < Editor.currentFigure.Points.Length; k++)
+                        for (k = 0; k < Editor.figures[i].Points.Length; k++)
                         {
-                            Editor.currentFigure.Points[k].X = (Editor.pathsCopy[i][k].X - w1.X) * (initialSelectionWidth + dh.X) / initialSelectionWidth;
-                            Editor.currentFigure.Points[k].X += w1.X;
-                            Editor.currentFigure.Points[k].Y = Editor.pathsCopy[i][k].Y;
+                            Editor.figures[i].Points[k].X = (Editor.pathsCopy[i][k].X - w1.X) * (initialSelectionWidth + dh.X) / initialSelectionWidth;
+                            Editor.figures[i].Points[k].X += w1.X;
+                            Editor.figures[i].Points[k].Y = Editor.pathsCopy[i][k].Y;
                         }
 
-                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.currentFigure.Points);
+                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.figures[i].Points);
                     }
                     form.Invalidate();
 
@@ -169,16 +169,16 @@ namespace MiniEditor.Classes
                 {
                     if (Editor.figures[i].Selected)
                     {
-                        for (k = 0; k < Editor.currentFigure.Points.Length; k++)
+                        for (k = 0; k < Editor.figures[i].Points.Length; k++)
                         {
-                            Editor.currentFigure.Points[k].Y = (Editor.pathsCopy[i][k].Y - w2.Y) * (initialSelectionHeight + dh.Y) / initialSelectionHeight;
-                            Editor.currentFigure.Points[k].Y += w2.Y;
+                            Editor.figures[i].Points[k].Y = (Editor.pathsCopy[i][k].Y - w2.Y) * (initialSelectionHeight + dh.Y) / initialSelectionHeight;
+                            Editor.figures[i].Points[k].Y += w2.Y;
                             if (Editor.shiftPressed) { dh.X = dh.Y; } else { dh.X = dh.X; }
-                            Editor.currentFigure.Points[k].X = (Editor.pathsCopy[i][k].X - w1.X) * (initialSelectionWidth + dh.X) / initialSelectionWidth;
-                            Editor.currentFigure.Points[k].X += w1.X;
+                            Editor.figures[i].Points[k].X = (Editor.pathsCopy[i][k].X - w1.X) * (initialSelectionWidth + dh.X) / initialSelectionWidth;
+                            Editor.figures[i].Points[k].X += w1.X;
                         }
 
-                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.currentFigure.Points);
+                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.figures[i].Points);
                     }
                     form.Invalidate();
 
@@ -195,16 +195,16 @@ namespace MiniEditor.Classes
                 {
                     if (Editor.figures[i].Selected)
                     {
-                        for (k = 0; k < Editor.currentFigure.Points.Length; k++)
+                        for (k = 0; k < Editor.figures[i].Points.Length; k++)
                         {
-                            Editor.currentFigure.Points[k].Y = (Editor.pathsCopy[i][k].Y - w2.Y) * (initialSelectionHeight + dh.Y) / initialSelectionHeight;
-                            Editor.currentFigure.Points[k].Y += w2.Y;
+                            Editor.figures[i].Points[k].Y = (Editor.pathsCopy[i][k].Y - w2.Y) * (initialSelectionHeight + dh.Y) / initialSelectionHeight;
+                            Editor.figures[i].Points[k].Y += w2.Y;
                             if (Editor.shiftPressed) { dh.X = dh.Y; } else { dh.X = dh.X; }
-                            Editor.currentFigure.Points[k].X = (Editor.pathsCopy[i][k].X - w1.X) * (initialSelectionWidth + dh.X) / initialSelectionWidth;
-                            Editor.currentFigure.Points[k].X += w1.X;
+                            Editor.figures[i].Points[k].X = (Editor.pathsCopy[i][k].X - w1.X) * (initialSelectionWidth + dh.X) / initialSelectionWidth;
+                            Editor.figures[i].Points[k].X += w1.X;
                         }
 
-                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.currentFigure.Points);
+                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.figures[i].Points);
                     }
                     form.Invalidate();
 

@@ -13,10 +13,11 @@ namespace MiniEditor.Classes
     abstract class Figure
     {
         protected PointF[] _points;
-        protected Color _borderColor;
-        protected Color _fillColor;
+        protected Color _borderColor = Color.FromArgb(0, 0, 0);
+        protected Color _fillColor = Color.FromArgb(255, 255, 255);
         protected bool _selected;
         protected decimal _thickness;
+        protected string _base64Image;
 
         public PointF[] Points { 
             get
@@ -69,7 +70,6 @@ namespace MiniEditor.Classes
 
 
         public abstract void calculatePoints(PointF originPoint, PointF endPoint);
-
     }
     
 }

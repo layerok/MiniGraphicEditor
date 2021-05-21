@@ -16,11 +16,45 @@ namespace MiniEditor
     public partial class EditorForm : Form
     {
         Editor Editor;
+
+        Button[] figureButtons;
         
         public EditorForm()
         {
             InitializeComponent();
             Editor = new Editor(this);
+            Editor.registerFigure(typeof(Lightning));
+            Editor.registerFigure(typeof(Arrow));
+            Editor.init();
+
+            figureButtons = new Button[Editor.registeredFigures.Length];
+
+            for (i = 0; i < Editor.registeredFigures.Length; i++)
+            {
+                int row = i / Editor.buttonFigureColumns;
+                int col = i % Editor.buttonFigureColumns;
+
+                figureButtons[i] = new Button();
+                figureButtons[i].Location = new Point(5 + (col * (Editor.buttonFigureSize + Editor.buttonFigureMarginRight)), 418 + (row * (Editor.buttonFigureSize + Editor.buttonFigureMarginRight)));
+                figureButtons[i].Size = new Size(Editor.buttonFigureSize, Editor.buttonFigureSize);
+                figureButtons[i].BackgroundImageLayout = ImageLayout.Stretch;
+                figureButtons[i].BackgroundImage = Image.FromFile("icons/" + Editor.registeredFigures[i].Name + ".png");
+                figureButtons[i].Visible = true;
+                figureButtons[i].FlatStyle = FlatStyle.Flat;
+                figureButtons[i].FlatAppearance.BorderSize = 1;
+
+                if( i == Editor.selectedFigureIndex )
+                {
+                    figureButtons[i].FlatAppearance.BorderColor = Color.Red;
+                } else
+                {
+                    figureButtons[i].FlatAppearance.BorderColor = Color.Black;
+                }
+                
+                panel1.Controls.Add(figureButtons[i]);
+                figureButtons[i].Click += new EventHandler(this.selectFigureButton_Click);
+            }
+            
         }
 
         int i;
@@ -34,6 +68,26 @@ namespace MiniEditor
         {
            Editor.currentFigure.BorderColor = borderColorButton.BackColor;
            Editor.currentFigure.FillColor = fillColorButton.BackColor;
+
+            
+
+        }
+
+        private void selectFigureButton_Click(object sender, EventArgs e)
+        {
+            for (i = 0; i < figureButtons.Length; i++)
+            {
+                if(sender as Button == figureButtons[i])
+                {
+                    Editor.selectedFigureIndex = i;
+                    Editor.resetSelectedFigure();
+                    figureButtons[i].FlatAppearance.BorderColor = Color.Red;
+                } else
+                {
+                    figureButtons[i].FlatAppearance.BorderColor = Color.Black;
+                }
+            
+            }
         }
 
 

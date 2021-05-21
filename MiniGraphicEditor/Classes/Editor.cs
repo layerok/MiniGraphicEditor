@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using MiniEditor.Classes;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 
 namespace MiniEditor.Classes
@@ -17,11 +19,18 @@ namespace MiniEditor.Classes
     class Editor
     {
 
-        int i, j, k;
+        int i, j;
+
+        public int buttonFigureSize = 30;
+        public int buttonFigureMarginRight = 5;
+        public int buttonFigureColumns = 2;
+
         public GraphicsPath[]   paths = new GraphicsPath[0];
         public Figure[]         figures = new Figure[0];
         public GraphicsPath     currentPath = new GraphicsPath();
-        public Figure           currentFigure = new Lightning();
+        public Figure           currentFigure;
+        public Type[] registeredFigures = new Type[0];
+        public int selectedFigureIndex = 0;
 
         public EditorForm form;
 
@@ -43,6 +52,16 @@ namespace MiniEditor.Classes
             this.form = form;
         }
 
+        public void init()
+        {
+            resetSelectedFigure();
+        }
+
+        public void resetSelectedFigure()
+        {
+            this.currentFigure = (Figure)Activator.CreateInstance(registeredFigures[selectedFigureIndex]);
+        }
+
         public void addCurrentFigure()
         {
             addFigure(this.currentFigure);
@@ -62,7 +81,7 @@ namespace MiniEditor.Classes
             paths[newLength - 1] = new GraphicsPath();
             paths[newLength - 1].AddPath(currentPath, true);
 
-            this.currentFigure = new Lightning();
+            this.currentFigure = (Figure)Activator.CreateInstance(registeredFigures[selectedFigureIndex]);
         }
 
         public void addTempPath()
@@ -78,13 +97,14 @@ namespace MiniEditor.Classes
                 form.Cursor = Cursors.Hand;
                 if (!figures[i].Selected) continue;
 
-                for (j = 0; j < currentFigure.Points.Length; j++)
+
+                for (j = 0; j < figures[i].Points.Length; j++)
                 {
-                    currentFigure.Points[j].X = pathsCopy[i][j].X + x;
-                    currentFigure.Points[j].Y = pathsCopy[i][j].Y + y;
+                    figures[i].Points[j].X = pathsCopy[i][j].X + x;
+                    figures[i].Points[j].Y = pathsCopy[i][j].Y + y;
 
                 }
-                paths[i].Reset(); paths[i].AddPolygon(currentFigure.Points);
+                paths[i].Reset(); paths[i].AddPolygon(figures[i].Points);
                 Resizer.calculatePoints();
                 form.Invalidate();
             }
@@ -116,6 +136,13 @@ namespace MiniEditor.Classes
             currentPath.Reset();
 
             form.Invalidate();
+        }
+
+        public void registerFigure(Type type)
+        {
+            Array.Resize(ref registeredFigures, registeredFigures.Length + 1);
+            registeredFigures[registeredFigures.Length - 1] = type;
+
         }
 
     }

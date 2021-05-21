@@ -13,15 +13,12 @@ namespace MiniEditor.Classes
     class Lightning : Figure
     {
 
+
         public Lightning()
         {
             _points = new PointF[11];
-            _borderColor = Color.FromArgb(0, 0, 0);
-            _fillColor = Color.FromArgb(255, 255, 255);
         }
-
-
-
+       
         public override void calculatePoints(PointF originPoint, PointF endPoint)
         {
 
