@@ -27,6 +27,7 @@ namespace MiniGraphicEditor
             Editor.registerFigure(typeof(Lightning));
             Editor.registerFigure(typeof(Arrow));
             Editor.registerFigure(typeof(ArrowFlatEnd));
+            Editor.registerFigure(typeof(Trapezoid));
             Editor.init();
 
             figureButtons = new Button[Editor.registeredFigures.Length];
