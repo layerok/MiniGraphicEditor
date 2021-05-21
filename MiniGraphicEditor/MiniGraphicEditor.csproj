@@ -51,6 +51,7 @@
     <Compile Include="Classes\Figures\Arrow.cs" />
     <Compile Include="Classes\Figures\ArrowFlatEnd.cs" />
     <Compile Include="Classes\Figures\Lightning.cs" />
+    <Compile Include="Classes\Figures\Trapezoid.cs" />
     <Compile Include="Classes\Resizer.cs" />
     <Compile Include="Classes\States.cs" />
     <Compile Include="Classes\UIProperties.cs" />

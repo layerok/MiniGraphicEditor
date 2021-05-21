@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniGraphicEditor", "MiniGraphicEditor\MiniGraphicEditor.csproj", "{8FFEFD82-4784-478E-B72C-CB4888FB574E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApplication13", "..\..\..\Downloads\Курсовая-20210521T144020Z-001\Курсовая\Курсовая 13 вариант\Курсовая 13 вар\WindowsFormsApplication13\WindowsFormsApplication13.csproj", "{5FB426DC-C080-4C1F-B719-A75CB6406F92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApplication13", "..\..\..\Downloads\Курсовая-20210521T144020Z-001\Курсовая\курсовая 16 вариант\Курсовая 16 вар\WindowsFormsApplication13\WindowsFormsApplication13.csproj", "{5FB426DC-C080-4C1F-B719-A75CB6406F92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

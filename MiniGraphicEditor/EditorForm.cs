@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
-using MiniEditor.Classes;
+using MiniGraphicEditor.Classes;
+using MiniGraphicEditor.Classes.Figures;
 
 
-namespace MiniEditor
+namespace MiniGraphicEditor
 {
     public partial class EditorForm : Form
     {

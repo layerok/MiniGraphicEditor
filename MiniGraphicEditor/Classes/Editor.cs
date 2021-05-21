@@ -8,12 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
-using MiniEditor.Classes;
+using MiniGraphicEditor.Classes;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
 
-namespace MiniEditor.Classes
+namespace MiniGraphicEditor.Classes
 {
     
     class Editor

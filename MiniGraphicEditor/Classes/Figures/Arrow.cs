@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniEditor.Classes
+namespace MiniGraphicEditor.Classes.Figures
 {
     class Arrow : Figure
     {

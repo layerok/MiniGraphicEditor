@@ -8,7 +8,7 @@ using System.Drawing.Drawing2D;
 
 
 
-namespace MiniEditor.Classes
+namespace MiniGraphicEditor.Classes.Figures
 {
     class Lightning : Figure
     {

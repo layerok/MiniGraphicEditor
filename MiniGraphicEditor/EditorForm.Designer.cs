@@ -1,4 +1,4 @@
-﻿namespace MiniEditor
+﻿namespace MiniGraphicEditor
 {
     partial class EditorForm
     {
