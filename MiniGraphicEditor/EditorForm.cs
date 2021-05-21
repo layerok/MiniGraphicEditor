@@ -29,6 +29,7 @@ namespace MiniGraphicEditor
             Editor.registerFigure(typeof(ArrowFlatEnd));
             Editor.registerFigure(typeof(Trapezoid));
             Editor.registerFigure(typeof(DialogBox));
+            Editor.registerFigure(typeof(Butterfly));
             Editor.init();
 
             figureButtons = new Button[Editor.registeredFigures.Length];
