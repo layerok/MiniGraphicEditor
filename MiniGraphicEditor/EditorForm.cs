@@ -19,6 +19,8 @@ namespace MiniGraphicEditor
         Editor Editor;
 
         Button[] figureButtons;
+
+        double pi = Math.PI / 180;
         
         public EditorForm()
         {
@@ -33,6 +35,7 @@ namespace MiniGraphicEditor
             Editor.registerFigure(typeof(Hedgehog));
             Editor.registerFigure(typeof(Turn));
             Editor.registerFigure(typeof(Radio));
+            Editor.registerFigure(typeof(Smile));
             Editor.init();
 
             figureButtons = new Button[Editor.registeredFigures.Length];
@@ -43,7 +46,7 @@ namespace MiniGraphicEditor
                 int col = i % Editor.buttonFigureColumns;
 
                 figureButtons[i] = new Button();
-                figureButtons[i].Location = new Point(5 + (col * (Editor.buttonFigureSize + Editor.buttonFigureMarginRight)), 418 + (row * (Editor.buttonFigureSize + Editor.buttonFigureMarginRight)));
+                figureButtons[i].Location = new Point(Editor.buttonFigureBlockLeft + (col * (Editor.buttonFigureSize + Editor.buttonFigureMarginRight)), Editor.buttonFigureBlockTop + (row * (Editor.buttonFigureSize + Editor.buttonFigureMarginRight)));
                 figureButtons[i].Size = new Size(Editor.buttonFigureSize, Editor.buttonFigureSize);
                 figureButtons[i].BackgroundImageLayout = ImageLayout.Stretch;
                 figureButtons[i].BackgroundImage = Image.FromFile("icons/" + Editor.registeredFigures[i].Name + ".png");
@@ -65,10 +68,7 @@ namespace MiniGraphicEditor
             
         }
 
-        int i;
-
- 
-        PointF  u;
+        int i, k, j;
         Graphics g;
 
 
@@ -102,7 +102,7 @@ namespace MiniGraphicEditor
         private void updateEditorUIProps(object sender, EventArgs e)
         {
             Editor.uiProps.originPoint.X = (float)numericUpDown1.Value;
-            Editor.uiProps.originPoint.Y = (float)numericUpDown2.Value;
+            Editor.uiProps.originPoint.Y = (float)numericUpDown2.Value + this.panel1.Height;
             Editor.uiProps.wd = (float)numericUpDown4.Value;
             Editor.uiProps.hg = (float)numericUpDown3.Value;
             Editor.uiProps.endPoint.X = Editor.uiProps.originPoint.X + Editor.uiProps.wd;
@@ -126,7 +126,7 @@ namespace MiniGraphicEditor
  
             Editor.state = States.DRAW_VIA_MOUSE;
             Cursor = Cursors.Cross;
-            if (Editor.paths.Length > 0)
+            if (Editor.figures.Length > 0)
             {
                 for (i = 0; i < Editor.figures.Length; i++) Editor.figures[i].Selected = false;
                 Invalidate();
@@ -182,30 +182,28 @@ namespace MiniGraphicEditor
             if (Editor.state == States.DRAW_VIA_MOUSE)
             {
                 Editor.mouseDown = true;
-                u = e.Location;
                 return;
             }
 
-            Editor.pathsCopy = new PointF[Editor.paths.Length][];
             
-
             if(Editor.Resizer.checkIfPointWasClicked(e))
             {
                 Cursor = Cursors.SizeAll;
+                Editor.Resizer.initialSelectionRect = Editor.Resizer.getRect();
             }
 
 
 
-            if (!(Editor.paths.Length > 0))
+            if (!(Editor.figures.Length > 0))
             {
                 // Если еще не были созданые фигиры, то выходим
                 return;
             }
 
-            for (i = 0; i < Editor.paths.Length; i++)
+            for (i = 0; i < Editor.figures.Length; i++)
             {
-                Editor.pathsCopy[i] = Editor.paths[i].PathPoints;
-                if (Editor.figures[i].Selected && Editor.paths[i].IsVisible(e.Location))
+                Editor.figures[i].PathCopy = Editor.figures[i].Path;
+                if (Editor.figures[i].Selected && Editor.figures[i].Path.IsVisible(e.Location))
                 {
                     Editor.state = States.MOVE_SELECTION;
                 }
@@ -216,7 +214,7 @@ namespace MiniGraphicEditor
 
         private void EditorForm_MouseMove(object sender, MouseEventArgs e)
         {
-            if (Editor.paths.Length > 0 && Editor.state == States.MOVE_SELECTION)
+            if (Editor.figures.Length > 0 && Editor.state == States.MOVE_SELECTION)
             {
                 Editor.moveSelected((e.X - Editor.pressedPoint.X), (e.Y - Editor.pressedPoint.Y));
             }
@@ -224,8 +222,6 @@ namespace MiniGraphicEditor
             if (Editor.state == States.DRAW_VIA_MOUSE)
             {
                 Editor.currentFigure.calculatePoints(Editor.pressedPoint, e.Location);
-
-                Editor.addTempPath();
                 Invalidate();
             }
             else { 
@@ -237,11 +233,11 @@ namespace MiniGraphicEditor
         }
         private void EditorForm_MouseUp(object sender, MouseEventArgs e)
         {
-            if (Editor.paths.Length > 0 && Editor.mouseDown == false && Editor.state != States.RESIZE_SELECTION && Editor.state != States.MOVE_SELECTION  )
+            if (Editor.figures.Length > 0 && Editor.mouseDown == false && Editor.state != States.RESIZE_SELECTION && Editor.state != States.MOVE_SELECTION  )
             {
                 for (i = Editor.figures.Length - 1; i > -1; i--)
                 {
-                    if (Editor.paths[i].IsVisible(e.Location))
+                    if (Editor.figures[i].Path.IsVisible(e.Location))
                     {
                         Editor.figures[i].Selected = !Editor.figures[i].Selected;
                         Editor.Resizer.calculatePoints();
@@ -274,16 +270,16 @@ namespace MiniGraphicEditor
                 Editor.currentFigure.FillColor = fillColorButton.BackColor;
                 Editor.currentFigure.BorderColor = borderColorButton.BackColor;
 
-                g.FillPath(new SolidBrush(fillColorButton.BackColor), Editor.currentPath);
-                g.DrawPath(new Pen(borderColorButton.BackColor, (float)thicknessSpinner.Value), Editor.currentPath);
+                g.FillPath(new SolidBrush(fillColorButton.BackColor), Editor.currentFigure.Path);
+                g.DrawPath(new Pen(borderColorButton.BackColor, (float)thicknessSpinner.Value), Editor.currentFigure.Path);
             }
 
-            if (!(Editor.paths.Length > 0)) return;
+            if (!(Editor.figures.Length > 0)) return;
 
-            for (i = 0; i < Editor.paths.Length; i++)
+            for (i = 0; i < Editor.figures.Length; i++)
             {
-                g.FillPath(new SolidBrush(Editor.figures[i].FillColor), Editor.paths[i]);
-                g.DrawPath(new Pen(Editor.figures[i].BorderColor, (float)Editor.figures[i].Thickness), Editor.paths[i]);
+                g.FillPath(new SolidBrush(Editor.figures[i].FillColor), Editor.figures[i].Path);
+                g.DrawPath(new Pen(Editor.figures[i].BorderColor, (float)Editor.figures[i].Thickness), Editor.figures[i].Path);
                 if (Editor.state == States.RESIZE_SELECTION) Editor.Resizer.calculatePoints();
             }
 
@@ -315,7 +311,7 @@ namespace MiniGraphicEditor
                 Editor.shiftPressed = true;
             }
             
-            if (e.KeyCode == Keys.Delete && Editor.paths.Length > 0) Editor.deleteSelected();
+            if (e.KeyCode == Keys.Delete && Editor.figures.Length > 0) Editor.deleteSelected();
 
         }
         private void EditorForm_KeyUp(object sender, KeyEventArgs e)
@@ -323,6 +319,21 @@ namespace MiniGraphicEditor
             if (e.KeyCode == Keys.ShiftKey)
             {
                 Editor.shiftPressed = false;
+            }
+        }
+
+        private void rotateSpinner_ValueChanged(object sender, EventArgs e)
+        {
+            int deg = (int)rotateSpinner.Value;
+
+            for (i = 0; i < Editor.figures.Length; i++)
+            {
+                if (!Editor.figures[i].Selected) continue;
+
+                for (k = 0; k < Editor.figures[i].Path.PathPoints.Length; k++)
+                {
+                    //Editor.figures[i].Points[k] = 
+                }
             }
         }
     }

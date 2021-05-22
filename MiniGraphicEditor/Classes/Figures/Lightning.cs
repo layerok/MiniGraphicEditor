@@ -46,6 +46,13 @@ namespace MiniGraphicEditor.Classes.Figures
             Points[9].Y = Points[2].Y + (Points[2].Y - Points[1].Y) * 1.5f;
             Points[10].X = Points[1].X + (Points[2].X - Points[1].X) * 2;
             Points[10].Y = Points[1].Y + (Points[2].Y - Points[1].Y) * 2;
+            createPath(originPoint, endPoint);
+        }
+
+        public override void createPath(PointF originPoint, PointF endPoint)
+        {
+            Path = new GraphicsPath();
+            Path.AddPolygon(Points);
         }
     }
 }

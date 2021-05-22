@@ -21,13 +21,13 @@ namespace MiniGraphicEditor.Classes
 
         int i, j;
 
-        public int buttonFigureSize = 30;
+        public int buttonFigureSize = 24;
         public int buttonFigureMarginRight = 5;
-        public int buttonFigureColumns = 2;
+        public int buttonFigureColumns = 10;
+        public int buttonFigureBlockTop = 6;
+        public int buttonFigureBlockLeft = 600;
 
-        public GraphicsPath[]   paths = new GraphicsPath[0];
         public Figure[]         figures = new Figure[0];
-        public GraphicsPath     currentPath = new GraphicsPath();
         public Figure           currentFigure;
         public Type[] registeredFigures = new Type[0];
         public int selectedFigureIndex = 0;
@@ -41,8 +41,6 @@ namespace MiniGraphicEditor.Classes
 
 
         public UIProperties uiProps = new UIProperties();
-
-        public PointF[][] pathsCopy;
 
         public PointF pressedPoint = new PointF();
 
@@ -71,28 +69,18 @@ namespace MiniGraphicEditor.Classes
         {
             int newLength = figures.Length + 1;
 
-            this.currentPath.Reset();
-            this.currentPath.AddPolygon(figure.Points);
-
             Array.Resize(ref figures, newLength);
             figures[newLength - 1] = figure;
-
-            Array.Resize(ref paths, newLength);
-            paths[newLength - 1] = new GraphicsPath();
-            paths[newLength - 1].AddPath(currentPath, true);
 
             this.currentFigure = (Figure)Activator.CreateInstance(registeredFigures[selectedFigureIndex]);
         }
 
-        public void addTempPath()
-        {
-            this.currentPath.Reset();
-            this.currentPath.AddPolygon(this.currentFigure.Points);
-        }
+ 
+
 
         public void moveSelected(float x, float y)
         {
-            for (i = paths.Length - 1; i > -1; i--)
+            for (i = figures.Length - 1; i > -1; i--)
             {
                 form.Cursor = Cursors.Hand;
                 if (!figures[i].Selected) continue;
@@ -100,11 +88,11 @@ namespace MiniGraphicEditor.Classes
 
                 for (j = 0; j < figures[i].Points.Length; j++)
                 {
-                    figures[i].Points[j].X = pathsCopy[i][j].X + x;
-                    figures[i].Points[j].Y = pathsCopy[i][j].Y + y;
+                    figures[i].Points[j].X = figures[i].PathCopy.PathPoints[j].X + x;
+                    figures[i].Points[j].Y = figures[i].PathCopy.PathPoints[j].Y + y;
 
                 }
-                paths[i].Reset(); paths[i].AddPolygon(figures[i].Points);
+                figures[i].Path.Reset(); figures[i].Path.AddPolygon(figures[i].Points);
                 Resizer.calculatePoints();
                 form.Invalidate();
             }
@@ -113,11 +101,11 @@ namespace MiniGraphicEditor.Classes
         public void deleteSelected()
         {
             int unSelectedCount = 0, selectedCount = 0;
-            for (i = 0; i < paths.Length; i++)
+            for (i = 0; i < figures.Length; i++)
             {
                 if (figures[i].Selected == false)
                 {
-                    paths[unSelectedCount] = paths[i];
+                    figures[unSelectedCount] = figures[i];
 
                     figures[unSelectedCount].Selected = figures[i].Selected;
 
@@ -129,11 +117,8 @@ namespace MiniGraphicEditor.Classes
             int newLength = figures.Length - selectedCount;
 
             Array.Resize(ref figures, newLength);
-            Array.Resize(ref paths, newLength);
 
-
-
-            currentPath.Reset();
+            currentFigure.Path.Reset();
 
             form.Invalidate();
         }

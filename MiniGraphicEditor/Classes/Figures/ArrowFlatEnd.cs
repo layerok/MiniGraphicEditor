@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,13 @@ namespace MiniGraphicEditor.Classes.Figures
             Points[4].X = endPoint.X;
             Points[5].Y = originPoint.Y;
 
+            createPath(originPoint, endPoint);
+        }
 
+        public override void createPath(PointF originPoint, PointF endPoint)
+        {
+            Path = new GraphicsPath();
+            Path.AddPolygon(Points);
         }
     }
 }

@@ -17,7 +17,13 @@ namespace MiniGraphicEditor.Classes
         protected Color _fillColor = Color.FromArgb(255, 255, 255);
         protected bool _selected;
         protected decimal _thickness;
-        protected string _base64Image;
+        protected GraphicsPath _path;
+        protected GraphicsPath _pathCopy;
+
+        public Figure()
+        {
+            _path = new GraphicsPath();
+        }
 
         public PointF[] Points { 
             get
@@ -68,8 +74,35 @@ namespace MiniGraphicEditor.Classes
             }
         }
 
+        public GraphicsPath Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                _path = value;
+            }
+        }
+
+
+        public GraphicsPath PathCopy
+        {
+            get
+            {
+                return _pathCopy;
+            }
+            set
+            {
+                _pathCopy = value;
+            }
+        }
+
 
         public abstract void calculatePoints(PointF originPoint, PointF endPoint);
+
+        public abstract void createPath(PointF originPoint, PointF endPoint);
     }
     
 }

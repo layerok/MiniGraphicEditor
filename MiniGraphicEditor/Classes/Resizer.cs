@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,7 +20,7 @@ namespace MiniGraphicEditor.Classes
         PointF[] points = new PointF[8];
 
         RectangleF selectionRect;
-        public float initialSelectionWidth, initialSelectionHeight;
+        public RectangleF initialSelectionRect;
         public int pointIndex;
 
 
@@ -49,14 +49,7 @@ namespace MiniGraphicEditor.Classes
 
         public void calculatePoints()
         {
-            RectangleF rect;
-            Editor.currentPath.Reset();
-            for (j = 0; j < Editor.figures.Length; j++)
-            {
-                if (Editor.figures[j].Selected) Editor.currentPath.AddPath(Editor.paths[j], true);
-            }
-
-            rect = Editor.currentPath.GetBounds();
+            RectangleF rect = getRect();
             this.selectionRect = rect;
 
 
@@ -66,6 +59,19 @@ namespace MiniGraphicEditor.Classes
             this.points[0].Y = this.points[1].Y = this.points[2].Y = rect.Top - 10;
             this.points[3].Y = this.points[4].Y = rect.Top + rect.Height / 2 - 5;
             this.points[5].Y = this.points[6].Y = this.points[7].Y = rect.Bottom;
+        }
+
+        public RectangleF getRect()
+        {
+            RectangleF rect;
+            Editor.currentFigure.Path.Reset();
+            for (j = 0; j < Editor.figures.Length; j++)
+            {
+                if (Editor.figures[j].Selected) Editor.currentFigure.Path.AddPath(Editor.figures[j].Path, true);
+            }
+
+            rect = Editor.currentFigure.Path.GetBounds();
+            return rect;
         }
 
         public bool checkIfPointWasClicked(MouseEventArgs e)
@@ -83,16 +89,11 @@ namespace MiniGraphicEditor.Classes
                     pointIndex = i;
                     Editor.state = States.RESIZE_SELECTION;
 
-
-                    initialSelectionHeight = selectionRect.Height;
-                    initialSelectionWidth = selectionRect.Width;
-
-
-                    for (k = 0; k < Editor.paths.Length; k++)
+                    for (k = 0; k < Editor.figures.Length; k++)
                     {
 
                         if (!Editor.figures[k].Selected) continue;
-                        Editor.pathsCopy[k] = Editor.paths[k].PathPoints;
+                        Editor.figures[k].PathCopy = Editor.figures[k].Path;
 
                     }
                     return true;
@@ -104,112 +105,177 @@ namespace MiniGraphicEditor.Classes
 
         public void resize(MouseEventArgs e, EditorForm form)
         {
-            PointF w1, w2, dh;
+            PointF delta;
 
-            dh = new PointF();
-            w1 = new PointF();
-            w2 = new PointF();
+            delta = new PointF();
 
-            dh.Y = e.Y - Editor.pressedPoint.Y;
-            dh.X = e.X - Editor.pressedPoint.X;
+
+            delta.Y = e.Y - Editor.pressedPoint.Y;
+            delta.X = e.X - Editor.pressedPoint.X;
+
+            if(pointIndex == 0)
+            {
+                // top-left
+                delta.Y *= -1;
+                delta.X *= -1;
+                if (e.X >= selectionRect.Right - 10 || e.Y >= selectionRect.Bottom - 10) return;
+            } else if(pointIndex == 1){
+                // top-center
+                delta.Y *= -1;
+                if (e.Y >= selectionRect.Bottom - 10) return;
+            } else if(pointIndex == 2)
+            {
+                //right-top
+                delta.Y *= -1;
+                if (e.Y >= selectionRect.Bottom - 10 || e.X <= selectionRect.Left + 10) return;
+            } else if(pointIndex == 3)
+            {
+                //left-center
+                delta.X *= -1;
+                if (e.X >= selectionRect.Right - 10) { return; }
+            } else if(pointIndex == 4)
+            {
+                // right-center
+                if (e.X <= selectionRect.Left + 10) { return; }
+            } else if(pointIndex == 5)
+            {
+                // left-bottom
+                delta.X *= -1;
+                if (e.X >= selectionRect.Right - 10 || e.Y <= selectionRect.Top + 10) return;
+            } else if(pointIndex == 6)
+            {
+                //bottom-center
+                if (e.Y <= selectionRect.Top + 10) return;
+            } else if(pointIndex == 7)
+            {
+                //bottom-right
+                if (e.Y <= selectionRect.Top + 10 || e.X <= selectionRect.Left + 10) return;
+            }
 
 
             if (pointIndex == 1 || pointIndex == 6)
             {
                 form.Cursor = Cursors.SizeNS;
-                if (pointIndex == 1) { w1.Y = selectionRect.Bottom; dh.Y *= -1; if (e.Y >= selectionRect.Bottom - 10) { return; } } else { w1.Y = selectionRect.Top; if (e.Y <= selectionRect.Top + 10) { return; } }
-
-                for (i = 0; i < Editor.paths.Length; i++)
-                {
-                    if (Editor.figures[i].Selected)
-                    {
-
-                        for (k = 0; k < Editor.figures[i].Points.Length; k++)
-                        {
-                            Editor.figures[i].Points[k].Y = (Editor.pathsCopy[i][k].Y - w1.Y) * (initialSelectionHeight + dh.Y) / initialSelectionHeight;
-                            Editor.figures[i].Points[k].Y += w1.Y;
-                            Editor.figures[i].Points[k].X = Editor.pathsCopy[i][k].X;
-                        }
-                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.figures[i].Points);
-                    }
-                    form.Invalidate();
-                }
             }
+
             if (pointIndex == 3 || pointIndex == 4)
             {
                 form.Cursor = Cursors.SizeWE;
-
-                if (pointIndex == 3) { w1.X = selectionRect.Right; dh.X *= -1; if (e.X >= selectionRect.Right - 10) { return; } } else { w1.X = selectionRect.Left; if (e.X <= selectionRect.Left + 10) { return; } }
-
-                for (i = 0; i < Editor.paths.Length; i++)
-                {
-                    if (Editor.figures[i].Selected)
-                    {
-                        for (k = 0; k < Editor.figures[i].Points.Length; k++)
-                        {
-                            Editor.figures[i].Points[k].X = (Editor.pathsCopy[i][k].X - w1.X) * (initialSelectionWidth + dh.X) / initialSelectionWidth;
-                            Editor.figures[i].Points[k].X += w1.X;
-                            Editor.figures[i].Points[k].Y = Editor.pathsCopy[i][k].Y;
-                        }
-
-                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.figures[i].Points);
-                    }
-                    form.Invalidate();
-
-                }
             }
             if (pointIndex == 0 || pointIndex == 7)
             {
                 form.Cursor = Cursors.SizeNWSE;
-
-                if (pointIndex == 0) { w2.Y = selectionRect.Bottom; w1.X = selectionRect.Right; dh.X *= -1; dh.Y *= -1; if (e.X >= selectionRect.Right - 10 || e.Y >= selectionRect.Bottom - 10) { return; } }
-                else { w1.X = selectionRect.Left; w2.Y = selectionRect.Top; if (e.Y <= selectionRect.Top + 10 || e.X <= selectionRect.Left + 10) { return; } }
-
-                for (i = 0; i < Editor.paths.Length; i++)
-                {
-                    if (Editor.figures[i].Selected)
-                    {
-                        for (k = 0; k < Editor.figures[i].Points.Length; k++)
-                        {
-                            Editor.figures[i].Points[k].Y = (Editor.pathsCopy[i][k].Y - w2.Y) * (initialSelectionHeight + dh.Y) / initialSelectionHeight;
-                            Editor.figures[i].Points[k].Y += w2.Y;
-                            if (Editor.shiftPressed) { dh.X = dh.Y; } else { dh.X = dh.X; }
-                            Editor.figures[i].Points[k].X = (Editor.pathsCopy[i][k].X - w1.X) * (initialSelectionWidth + dh.X) / initialSelectionWidth;
-                            Editor.figures[i].Points[k].X += w1.X;
-                        }
-
-                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.figures[i].Points);
-                    }
-                    form.Invalidate();
-
-                }
             }
             if (pointIndex == 2 || pointIndex == 5)
             {
-                form.Cursor = Cursors.SizeNESW;
-
-                if (pointIndex == 2) { w2.Y = selectionRect.Bottom; w1.X = selectionRect.Left; dh.Y *= -1; if (e.Y >= selectionRect.Bottom - 10 || e.X <= selectionRect.Left + 10) { return; } }
-                else { w1.X = selectionRect.Right; w2.Y = selectionRect.Top; dh.X *= -1; if (e.X >= selectionRect.Right - 10 || e.Y <= selectionRect.Top + 10) { return; } }
-
-                for (i = 0; i < Editor.paths.Length; i++)
-                {
-                    if (Editor.figures[i].Selected)
-                    {
-                        for (k = 0; k < Editor.figures[i].Points.Length; k++)
-                        {
-                            Editor.figures[i].Points[k].Y = (Editor.pathsCopy[i][k].Y - w2.Y) * (initialSelectionHeight + dh.Y) / initialSelectionHeight;
-                            Editor.figures[i].Points[k].Y += w2.Y;
-                            if (Editor.shiftPressed) { dh.X = dh.Y; } else { dh.X = dh.X; }
-                            Editor.figures[i].Points[k].X = (Editor.pathsCopy[i][k].X - w1.X) * (initialSelectionWidth + dh.X) / initialSelectionWidth;
-                            Editor.figures[i].Points[k].X += w1.X;
-                        }
-
-                        Editor.paths[i].Reset(); Editor.paths[i].AddPolygon(Editor.figures[i].Points);
-                    }
-                    form.Invalidate();
-
-                }
+                form.Cursor = Cursors.SizeNESW; 
             }
+
+            for (i = 0; i < Editor.figures.Length; i++)
+            {
+                if (Editor.figures[i].Selected)
+                {
+                    // Логика пересчета точек фигур при ресайзе
+                    float initialHeight = initialSelectionRect.Height;
+                    float resizedHeight = initialSelectionRect.Height + delta.Y;
+
+                    float initialWidth = initialSelectionRect.Width;
+                    float resizedWidth = initialSelectionRect.Width + delta.X;
+
+
+                    float originDeltaY = Editor.figures[i].PathCopy.GetBounds().Top - initialSelectionRect.Top;
+                    float endDeltaY = Editor.figures[i].PathCopy.GetBounds().Bottom - initialSelectionRect.Top;
+
+                    float originDeltaX = Editor.figures[i].PathCopy.GetBounds().Left - initialSelectionRect.Left;
+                    float endDeltaX = Editor.figures[i].PathCopy.GetBounds().Right - initialSelectionRect.Left;
+
+                    float originPercentY = 100 * originDeltaY / initialHeight;
+                    float endPercentY = 100 * endDeltaY / initialHeight;
+
+                    float originPercentX = 100 * originDeltaX / initialWidth;
+                    float endPercentX = 100 * endDeltaX / initialWidth;
+
+                    float originNewDeltaY = resizedHeight * originPercentY / 100;
+                    float endNewDeltaY = resizedHeight * endPercentY / 100;
+
+                    float originNewDeltaX = resizedWidth * originPercentX / 100;
+                    float endNewDeltaX = resizedWidth * endPercentX / 100;
+
+
+                    PointF startPoint = new Point();
+                    PointF endPoint = new Point();
+
+
+                    if (pointIndex == 6)
+                    {
+                        startPoint.Y = initialSelectionRect.Top + originNewDeltaY;
+                        startPoint.X = Editor.figures[i].PathCopy.GetBounds().Left;
+                        endPoint.Y = initialSelectionRect.Top + endNewDeltaY;
+                        endPoint.X = Editor.figures[i].PathCopy.GetBounds().Right;
+                    } 
+
+                    if(pointIndex == 1)
+                    {
+                        startPoint.Y = initialSelectionRect.Top - delta.Y + originNewDeltaY;
+                        startPoint.X = Editor.figures[i].PathCopy.GetBounds().Left;
+                        endPoint.Y = initialSelectionRect.Top - delta.Y + endNewDeltaY;
+                        endPoint.X = Editor.figures[i].PathCopy.GetBounds().Right;
+                    }
+
+                    if (pointIndex == 3)
+                    {
+                        startPoint.Y = Editor.figures[i].PathCopy.GetBounds().Top;
+                        startPoint.X = (initialSelectionRect.Left - delta.X) + originNewDeltaX;
+                        endPoint.Y = Editor.figures[i].PathCopy.GetBounds().Bottom;
+                        endPoint.X = (initialSelectionRect.Left - delta.X) + endNewDeltaX;
+                    }
+
+                    if (pointIndex == 4)
+                    {
+                        startPoint.Y = Editor.figures[i].PathCopy.GetBounds().Top;
+                        startPoint.X = initialSelectionRect.Left + originNewDeltaX;
+                        endPoint.Y = Editor.figures[i].PathCopy.GetBounds().Bottom;
+                        endPoint.X = initialSelectionRect.Left + endNewDeltaX;
+                    }
+
+                    if (pointIndex == 0)
+                    {
+                        startPoint.Y = initialSelectionRect.Top - delta.Y + originNewDeltaY;
+                        startPoint.X = (initialSelectionRect.Left - delta.X) + originNewDeltaX;
+                        endPoint.Y = initialSelectionRect.Top - delta.Y + endNewDeltaY;
+                        endPoint.X = (initialSelectionRect.Left - delta.X) + endNewDeltaX;
+                    }
+
+                    if (pointIndex == 2)
+                    {
+                        startPoint.Y = initialSelectionRect.Top - delta.Y + originNewDeltaY;
+                        startPoint.X = initialSelectionRect.Left + originNewDeltaX;
+                        endPoint.Y = initialSelectionRect.Top - delta.Y + endNewDeltaY;
+                        endPoint.X = initialSelectionRect.Left + endNewDeltaX;
+                    }
+
+                    if (pointIndex == 5)
+                    {
+                        startPoint.Y = initialSelectionRect.Top  + originNewDeltaY;
+                        startPoint.X = initialSelectionRect.Left - delta.X + originNewDeltaX;
+                        endPoint.Y = initialSelectionRect.Top + endNewDeltaY;
+                        endPoint.X = initialSelectionRect.Left - delta.X + endNewDeltaX;
+                    }
+
+                    if (pointIndex == 7)
+                    {
+                        startPoint.Y = initialSelectionRect.Top + originNewDeltaY;
+                        startPoint.X = initialSelectionRect.Left + originNewDeltaX;
+                        endPoint.Y = initialSelectionRect.Top + endNewDeltaY;
+                        endPoint.X = initialSelectionRect.Left + endNewDeltaX;
+                    }
+
+                    Editor.figures[i].calculatePoints(startPoint, endPoint);
+                }
+                form.Invalidate();
+            }
+            
+            
         }
 
     }
