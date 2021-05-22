@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing.Drawing2D;
-using MiniGraphicEditor.Classes;
-using System.Reflection;
-using System.Text.RegularExpressions;
+
 
 
 namespace MiniGraphicEditor.Classes
@@ -86,13 +77,14 @@ namespace MiniGraphicEditor.Classes
                 if (!figures[i].Selected) continue;
 
 
-                for (j = 0; j < figures[i].Points.Length; j++)
-                {
-                    figures[i].Points[j].X = figures[i].PathCopy.PathPoints[j].X + x;
-                    figures[i].Points[j].Y = figures[i].PathCopy.PathPoints[j].Y + y;
+                PointF originPoint = new PointF(), endPoint = new PointF();
 
-                }
-                figures[i].Path.Reset(); figures[i].Path.AddPolygon(figures[i].Points);
+                originPoint.X = figures[i].PathCopy.GetBounds().Left + x;
+                originPoint.Y = figures[i].PathCopy.GetBounds().Top + y;
+                endPoint.X = figures[i].PathCopy.GetBounds().Right + x;
+                endPoint.Y = figures[i].PathCopy.GetBounds().Bottom + y;
+
+                figures[i].calculatePoints(originPoint, endPoint);
                 Resizer.calculatePoints();
                 form.Invalidate();
             }
