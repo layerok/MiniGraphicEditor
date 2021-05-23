@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 
 
@@ -17,6 +19,8 @@ namespace MiniGraphicEditor.Classes
         public int buttonFigureColumns = 10;
         public int buttonFigureBlockTop = 6;
         public int buttonFigureBlockLeft = 600;
+
+        public int selectedAmount = 0;
 
         public Figure[]         figures = new Figure[0];
         public Figure           currentFigure;
@@ -79,12 +83,15 @@ namespace MiniGraphicEditor.Classes
 
                 PointF originPoint = new PointF(), endPoint = new PointF();
 
+
+                
+
                 originPoint.X = figures[i].PathCopy.GetBounds().Left + x;
                 originPoint.Y = figures[i].PathCopy.GetBounds().Top + y;
                 endPoint.X = figures[i].PathCopy.GetBounds().Right + x;
                 endPoint.Y = figures[i].PathCopy.GetBounds().Bottom + y;
 
-                figures[i].calculatePoints(originPoint, endPoint);
+                figures[i].initCalculations(originPoint, endPoint);
                 Resizer.calculatePoints();
                 form.Invalidate();
             }

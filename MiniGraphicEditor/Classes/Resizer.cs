@@ -19,7 +19,7 @@ namespace MiniGraphicEditor.Classes
         int i, j, k;
         PointF[] points = new PointF[8];
 
-        RectangleF selectionRect;
+        public RectangleF selectionRect;
         public RectangleF initialSelectionRect;
         public int pointIndex;
 
@@ -61,13 +61,14 @@ namespace MiniGraphicEditor.Classes
             this.points[5].Y = this.points[6].Y = this.points[7].Y = rect.Bottom;
         }
 
+
         public RectangleF getRect()
         {
             RectangleF rect;
             Editor.currentFigure.Path.Reset();
             for (j = 0; j < Editor.figures.Length; j++)
             {
-                if (Editor.figures[j].Selected) Editor.currentFigure.Path.AddPath(Editor.figures[j].Path, true);
+                if (Editor.figures[j].Selected) Editor.currentFigure.Path.AddPath(Editor.figures[j].NotTransformedPath, true);
             }
 
             rect = Editor.currentFigure.Path.GetBounds();
@@ -93,7 +94,7 @@ namespace MiniGraphicEditor.Classes
                     {
 
                         if (!Editor.figures[k].Selected) continue;
-                        Editor.figures[k].PathCopy = Editor.figures[k].Path;
+                        Editor.figures[k].PathCopy = Editor.figures[k].NotTransformedPath;
 
                     }
                     return true;
@@ -270,7 +271,7 @@ namespace MiniGraphicEditor.Classes
                         endPoint.X = initialSelectionRect.Left + endNewDeltaX;
                     }
 
-                    Editor.figures[i].calculatePoints(startPoint, endPoint);
+                    Editor.figures[i].initCalculations(startPoint, endPoint);
                 }
                 form.Invalidate();
             }

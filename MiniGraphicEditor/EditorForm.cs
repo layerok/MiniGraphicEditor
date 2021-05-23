@@ -111,7 +111,7 @@ namespace MiniGraphicEditor
 
         private void createFigureFromUIButton_Click(object sender, EventArgs e)
         {
-           Editor.currentFigure.calculatePoints(Editor.uiProps.originPoint, Editor.uiProps.endPoint);
+           Editor.currentFigure.initCalculations(Editor.uiProps.originPoint, Editor.uiProps.endPoint);
            Editor.currentFigure.BorderColor = borderColorButton.BackColor;
            Editor.currentFigure.FillColor   = fillColorButton.BackColor;
            Editor.currentFigure.Thickness = thicknessSpinner.Value;
@@ -202,7 +202,7 @@ namespace MiniGraphicEditor
 
             for (i = 0; i < Editor.figures.Length; i++)
             {
-                Editor.figures[i].PathCopy = Editor.figures[i].Path;
+                Editor.figures[i].PathCopy = Editor.figures[i].NotTransformedPath;
                 if (Editor.figures[i].Selected && Editor.figures[i].Path.IsVisible(e.Location))
                 {
                     Editor.state = States.MOVE_SELECTION;
@@ -221,7 +221,7 @@ namespace MiniGraphicEditor
 
             if (Editor.state == States.DRAW_VIA_MOUSE)
             {
-                Editor.currentFigure.calculatePoints(Editor.pressedPoint, e.Location);
+                Editor.currentFigure.initCalculations(Editor.pressedPoint, e.Location);
                 Invalidate();
             }
             else { 
@@ -263,7 +263,7 @@ namespace MiniGraphicEditor
         }
         private void EditorForm_Paint(object sender, PaintEventArgs e)
         {
-
+            int rotateSpinnerValue = 0;
             g = e.Graphics;
             if (Editor.mouseDown)
             {
@@ -273,17 +273,49 @@ namespace MiniGraphicEditor
                 g.FillPath(new SolidBrush(fillColorButton.BackColor), Editor.currentFigure.Path);
                 g.DrawPath(new Pen(borderColorButton.BackColor, (float)thicknessSpinner.Value), Editor.currentFigure.Path);
             }
-
+            Editor.selectedAmount = 0;
             if (!(Editor.figures.Length > 0)) return;
 
             for (i = 0; i < Editor.figures.Length; i++)
             {
+                if (Editor.figures[i].Selected)
+                {
+                    Editor.selectedAmount++;
+                    rotateSpinnerValue = Editor.figures[i].Angle;
+                }
+            }
+            
+            for (i = 0; i < Editor.figures.Length; i++)
+            {
+                
                 g.FillPath(new SolidBrush(Editor.figures[i].FillColor), Editor.figures[i].Path);
                 g.DrawPath(new Pen(Editor.figures[i].BorderColor, (float)Editor.figures[i].Thickness), Editor.figures[i].Path);
                 if (Editor.state == States.RESIZE_SELECTION) Editor.Resizer.calculatePoints();
             }
 
+
+            
+
+           
+            if(Editor.selectedAmount == 1)
+            {
+                // Убираем обработчик события, чтобы все выделиные фигуры не приняли угол назначенный в спиннере угла
+                rotateSpinner.ValueChanged -= rotateSpinner_ValueChanged;
+                rotateSpinner.Value = rotateSpinnerValue;
+                rotateSpinner.ValueChanged += rotateSpinner_ValueChanged;
+                rotateSpinner.Enabled = true;
+            } else
+            {
+                rotateSpinner.Enabled = false;
+                rotateSpinner.ValueChanged -= rotateSpinner_ValueChanged;
+                rotateSpinner.Value = 0;
+                rotateSpinner.ValueChanged += rotateSpinner_ValueChanged;
+                
+            }
+
+
             Editor.Resizer.showPoints(g);
+            
 
         }
 
@@ -329,12 +361,16 @@ namespace MiniGraphicEditor
             for (i = 0; i < Editor.figures.Length; i++)
             {
                 if (!Editor.figures[i].Selected) continue;
-
-                for (k = 0; k < Editor.figures[i].Path.PathPoints.Length; k++)
-                {
-                    //Editor.figures[i].Points[k] = 
-                }
+                
+                Editor.figures[i].PreviousAngle = Editor.figures[i].Angle;
+                Editor.figures[i].Angle = deg;
+                Editor.figures[i].initCalculations(Editor.figures[i].OriginPoint, Editor.figures[i].EndPoint);
+                Editor.Resizer.calculatePoints();
             }
+            Editor.state = States.ROTATE_SELECTION;
+
+
+            Invalidate();
         }
     }
 }

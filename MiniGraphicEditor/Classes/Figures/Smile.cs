@@ -18,19 +18,18 @@ namespace MiniGraphicEditor.Classes.Figures
 
         public override void calculatePoints(PointF originPoint, PointF endPoint)
         {
-            createPath(originPoint, endPoint);
+            
         }
 
-        public override void createPath(PointF originPoint, PointF endPoint)
+        public override GraphicsPath createPath()
         {
-            Path = new GraphicsPath();
-            float wd = endPoint.X - originPoint.X;
-            float hg = endPoint.Y - originPoint.Y;
-            GraphicsPath p = new GraphicsPath();
-            Path.AddEllipse(originPoint.X, originPoint.Y, (wd), (hg));
-            Path.AddBezier(originPoint.X + wd / 4, originPoint.Y + (hg / 12) * 7, originPoint.X + (wd / 4) * 2, originPoint.Y + (hg / 12) * 9, originPoint.X + (wd / 4) * 2, originPoint.Y + (hg / 12) * 9, originPoint.X + (wd / 4) * 3, originPoint.Y + (hg / 12) * 7);
-            Path.AddEllipse(originPoint.X + (wd / 12) * 3, originPoint.Y + hg / 3, wd / 5, hg / 5);
-            Path.AddEllipse(originPoint.X + (wd / 12) * 7, originPoint.Y + hg / 3, wd / 5, hg / 5);
+            GraphicsPath path = new GraphicsPath();
+
+            path.AddEllipse(_originPoint.X, _originPoint.Y, (_width), (_height));
+            path.AddBezier(_originPoint.X + _width / 4, _originPoint.Y + (_height / 12) * 7, _originPoint.X + (_width / 4) * 2, _originPoint.Y + (_height / 12) * 9, _originPoint.X + (_width / 4) * 2, _originPoint.Y + (_height / 12) * 9, _originPoint.X + (_width / 4) * 3, _originPoint.Y + (_height / 12) * 7);
+            path.AddEllipse(_originPoint.X + (_width / 12) * 3, _originPoint.Y + _height / 3, _width / 5, _height / 5);
+            path.AddEllipse(_originPoint.X + (_width / 12) * 7, _originPoint.Y + _height / 3, _width / 5, _height / 5);
+            return path;
           
             
         }
