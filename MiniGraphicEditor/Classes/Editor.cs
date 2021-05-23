@@ -32,7 +32,7 @@ namespace MiniGraphicEditor.Classes
         public Resizer Resizer;
         
         public string state = States.IDLE;
-        public bool mouseDown = false, shiftPressed = false;
+        public bool mouseDown = false, shiftPressed = false, ctrlPressed = false;
 
 
         public UIProperties uiProps = new UIProperties();

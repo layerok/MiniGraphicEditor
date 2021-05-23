@@ -15,6 +15,8 @@ namespace MiniGraphicEditor.Classes
         public RectangleF initialSelectionRect;
         public int pointIndex;
 
+        public int pointSize = 10;
+
 
 
 
@@ -32,7 +34,7 @@ namespace MiniGraphicEditor.Classes
                 {
                     for (j = 0; j < 8; j++)
                     {
-                        g.FillRectangle(new SolidBrush(Color.Blue), this.points[j].X, this.points[j].Y, 10, 10);
+                        g.FillRectangle(new SolidBrush(Color.Blue), this.points[j].X, this.points[j].Y, pointSize, pointSize);
                     }
                     break;
                 }
@@ -45,11 +47,11 @@ namespace MiniGraphicEditor.Classes
             this.selectionRect = rect;
 
 
-            this.points[0].X = this.points[3].X = this.points[5].X = rect.Left - 10;
-            this.points[1].X = this.points[6].X = rect.Left + rect.Width / 2 - 5;
+            this.points[0].X = this.points[3].X = this.points[5].X = rect.Left - pointSize;
+            this.points[1].X = this.points[6].X = rect.Left + rect.Width / 2 - (pointSize / 2);
             this.points[2].X = this.points[4].X = this.points[7].X = rect.Right;
-            this.points[0].Y = this.points[1].Y = this.points[2].Y = rect.Top - 10;
-            this.points[3].Y = this.points[4].Y = rect.Top + rect.Height / 2 - 5;
+            this.points[0].Y = this.points[1].Y = this.points[2].Y = rect.Top - pointSize;
+            this.points[3].Y = this.points[4].Y = rect.Top + rect.Height / 2 - (pointSize / 2);
             this.points[5].Y = this.points[6].Y = this.points[7].Y = rect.Bottom;
         }
 
@@ -74,9 +76,9 @@ namespace MiniGraphicEditor.Classes
             {
                 if (
                     e.X >= this.points[i].X &&
-                    e.X <= this.points[i].X + 10 &&
+                    e.X <= this.points[i].X + pointSize &&
                     e.Y >= this.points[i].Y &&
-                    e.Y <= this.points[i].Y + 10
+                    e.Y <= this.points[i].Y + pointSize
                     )
                 {
                     pointIndex = i;
@@ -106,43 +108,51 @@ namespace MiniGraphicEditor.Classes
             delta.Y = e.Y - Editor.pressedPoint.Y;
             delta.X = e.X - Editor.pressedPoint.X;
 
-            if(pointIndex == 0)
+            if (pointIndex == 0)
             {
                 // top-left
                 delta.Y *= -1;
                 delta.X *= -1;
-                if (e.X >= selectionRect.Right - 10 || e.Y >= selectionRect.Bottom - 10) return;
-            } else if(pointIndex == 1){
+                if (e.X >= selectionRect.Right - pointSize || e.Y >= selectionRect.Bottom - pointSize) return;
+            }
+            else if (pointIndex == 1)
+            {
                 // top-center
                 delta.Y *= -1;
-                if (e.Y >= selectionRect.Bottom - 10) return;
-            } else if(pointIndex == 2)
+                if (e.Y >= selectionRect.Bottom - pointSize) return;
+            }
+            else if (pointIndex == 2)
             {
                 //right-top
                 delta.Y *= -1;
-                if (e.Y >= selectionRect.Bottom - 10 || e.X <= selectionRect.Left + 10) return;
-            } else if(pointIndex == 3)
+                if (e.Y >= selectionRect.Bottom - pointSize || e.X <= selectionRect.Left + pointSize) return;
+            }
+            else if (pointIndex == 3)
             {
                 //left-center
                 delta.X *= -1;
-                if (e.X >= selectionRect.Right - 10) { return; }
-            } else if(pointIndex == 4)
+                if (e.X >= selectionRect.Right - pointSize) { return; }
+            }
+            else if (pointIndex == 4)
             {
                 // right-center
-                if (e.X <= selectionRect.Left + 10) { return; }
-            } else if(pointIndex == 5)
+                if (e.X <= selectionRect.Left + pointSize) { return; }
+            }
+            else if (pointIndex == 5)
             {
                 // left-bottom
                 delta.X *= -1;
-                if (e.X >= selectionRect.Right - 10 || e.Y <= selectionRect.Top + 10) return;
-            } else if(pointIndex == 6)
+                if (e.X >= selectionRect.Right - pointSize || e.Y <= selectionRect.Top + pointSize) return;
+            }
+            else if (pointIndex == 6)
             {
                 //bottom-center
-                if (e.Y <= selectionRect.Top + 10) return;
-            } else if(pointIndex == 7)
+                if (e.Y <= selectionRect.Top + pointSize) return;
+            }
+            else if (pointIndex == 7)
             {
                 //bottom-right
-                if (e.Y <= selectionRect.Top + 10 || e.X <= selectionRect.Left + 10) return;
+                if (e.Y <= selectionRect.Top + pointSize || e.X <= selectionRect.Left + pointSize) return;
             }
 
 
@@ -161,7 +171,7 @@ namespace MiniGraphicEditor.Classes
             }
             if (pointIndex == 2 || pointIndex == 5)
             {
-                form.Cursor = Cursors.SizeNESW; 
+                form.Cursor = Cursors.SizeNESW;
             }
 
             for (i = 0; i < Editor.figures.Length; i++)
@@ -185,7 +195,7 @@ namespace MiniGraphicEditor.Classes
                         resizedHeight = (Editor.shiftPressed) ? Math.Max(resizedHeight, resizedWidth) : resizedHeight;
                         resizedWidth = (Editor.shiftPressed) ? Math.Max(resizedHeight, resizedWidth) : resizedWidth;
                     }
-                    
+
                     float originDeltaY = Editor.figures[i].PathCopy.GetBounds().Top - initialSelectionRect.Top;
                     float endDeltaY = Editor.figures[i].PathCopy.GetBounds().Bottom - initialSelectionRect.Top;
 
@@ -221,7 +231,7 @@ namespace MiniGraphicEditor.Classes
                     }
 
 
-                    if(pointIndex == 1)
+                    if (pointIndex == 1)
                     {
                         startPoint.Y = initialSelectionRect.Top - delta.Y + originNewDeltaY;
                         startPoint.X = Editor.figures[i].PathCopy.GetBounds().Left;
@@ -233,7 +243,7 @@ namespace MiniGraphicEditor.Classes
                     if (pointIndex == 2)
                     {
                         top = Editor.shiftPressed ? initialSelectionRect.Bottom - resizedHeight : initialSelectionRect.Top - delta.Y;
-                        left = Editor.shiftPressed ? initialSelectionRect.Left: initialSelectionRect.Left;
+                        left = Editor.shiftPressed ? initialSelectionRect.Left : initialSelectionRect.Left;
 
                         startPoint.Y = top + originNewDeltaY;
                         startPoint.X = left + originNewDeltaX;
@@ -291,8 +301,8 @@ namespace MiniGraphicEditor.Classes
                 }
                 form.Invalidate();
             }
-            
-            
+
+
         }
 
     }
