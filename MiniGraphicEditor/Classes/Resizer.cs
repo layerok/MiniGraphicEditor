@@ -176,6 +176,9 @@ namespace MiniGraphicEditor.Classes
             {
                 if (Editor.figures[i].Selected)
                 {
+
+
+
                     // Логика пересчета точек фигур при ресайзе
                     float initialHeight = initialSelectionRect.Height;
                     float resizedHeight = initialSelectionRect.Height + delta.Y;
@@ -184,6 +187,13 @@ namespace MiniGraphicEditor.Classes
                     float resizedWidth = initialSelectionRect.Width + delta.X;
 
 
+                    // Пропорциональное увеличение только на угловых точках
+                    if (pointIndex == 0 || pointIndex == 2 || pointIndex == 5 || pointIndex == 7)
+                    {
+                        resizedHeight = (Editor.shiftPressed) ? Math.Max(resizedHeight, resizedWidth) : resizedHeight;
+                        resizedWidth = (Editor.shiftPressed) ? Math.Max(resizedHeight, resizedWidth) : resizedWidth;
+                    }
+                    
                     float originDeltaY = Editor.figures[i].PathCopy.GetBounds().Top - initialSelectionRect.Top;
                     float endDeltaY = Editor.figures[i].PathCopy.GetBounds().Bottom - initialSelectionRect.Top;
 
@@ -205,15 +215,19 @@ namespace MiniGraphicEditor.Classes
 
                     PointF startPoint = new Point();
                     PointF endPoint = new Point();
+                    float top, left;
 
-
-                    if (pointIndex == 6)
+                    if (pointIndex == 0)
                     {
-                        startPoint.Y = initialSelectionRect.Top + originNewDeltaY;
-                        startPoint.X = Editor.figures[i].PathCopy.GetBounds().Left;
-                        endPoint.Y = initialSelectionRect.Top + endNewDeltaY;
-                        endPoint.X = Editor.figures[i].PathCopy.GetBounds().Right;
-                    } 
+                        top = Editor.shiftPressed ? initialSelectionRect.Bottom - resizedHeight : initialSelectionRect.Top - delta.Y;
+                        left = Editor.shiftPressed ? initialSelectionRect.Right - resizedWidth : initialSelectionRect.Left - delta.X;
+
+                        startPoint.Y = top + originNewDeltaY;
+                        startPoint.X = left + originNewDeltaX;
+                        endPoint.Y = top + endNewDeltaY;
+                        endPoint.X = left + endNewDeltaX;
+                    }
+
 
                     if(pointIndex == 1)
                     {
@@ -221,6 +235,18 @@ namespace MiniGraphicEditor.Classes
                         startPoint.X = Editor.figures[i].PathCopy.GetBounds().Left;
                         endPoint.Y = initialSelectionRect.Top - delta.Y + endNewDeltaY;
                         endPoint.X = Editor.figures[i].PathCopy.GetBounds().Right;
+                    }
+
+
+                    if (pointIndex == 2)
+                    {
+                        top = Editor.shiftPressed ? initialSelectionRect.Bottom - resizedHeight : initialSelectionRect.Top - delta.Y;
+                        left = Editor.shiftPressed ? initialSelectionRect.Left: initialSelectionRect.Left;
+
+                        startPoint.Y = top + originNewDeltaY;
+                        startPoint.X = left + originNewDeltaX;
+                        endPoint.Y = top + endNewDeltaY;
+                        endPoint.X = left + endNewDeltaX;
                     }
 
                     if (pointIndex == 3)
@@ -239,29 +265,27 @@ namespace MiniGraphicEditor.Classes
                         endPoint.X = initialSelectionRect.Left + endNewDeltaX;
                     }
 
-                    if (pointIndex == 0)
-                    {
-                        startPoint.Y = initialSelectionRect.Top - delta.Y + originNewDeltaY;
-                        startPoint.X = (initialSelectionRect.Left - delta.X) + originNewDeltaX;
-                        endPoint.Y = initialSelectionRect.Top - delta.Y + endNewDeltaY;
-                        endPoint.X = (initialSelectionRect.Left - delta.X) + endNewDeltaX;
-                    }
-
-                    if (pointIndex == 2)
-                    {
-                        startPoint.Y = initialSelectionRect.Top - delta.Y + originNewDeltaY;
-                        startPoint.X = initialSelectionRect.Left + originNewDeltaX;
-                        endPoint.Y = initialSelectionRect.Top - delta.Y + endNewDeltaY;
-                        endPoint.X = initialSelectionRect.Left + endNewDeltaX;
-                    }
-
                     if (pointIndex == 5)
                     {
-                        startPoint.Y = initialSelectionRect.Top  + originNewDeltaY;
-                        startPoint.X = initialSelectionRect.Left - delta.X + originNewDeltaX;
-                        endPoint.Y = initialSelectionRect.Top + endNewDeltaY;
-                        endPoint.X = initialSelectionRect.Left - delta.X + endNewDeltaX;
+
+                        top = Editor.shiftPressed ? initialSelectionRect.Top : initialSelectionRect.Top;
+                        left = Editor.shiftPressed ? initialSelectionRect.Right - resizedWidth : initialSelectionRect.Left - delta.X;
+
+                        startPoint.Y = top + originNewDeltaY;
+                        startPoint.X = left + originNewDeltaX;
+                        endPoint.Y = top + endNewDeltaY;
+                        endPoint.X = left + endNewDeltaX;
                     }
+
+
+                    if (pointIndex == 6)
+                    {
+                        startPoint.Y = initialSelectionRect.Top + originNewDeltaY;
+                        startPoint.X = Editor.figures[i].PathCopy.GetBounds().Left;
+                        endPoint.Y = initialSelectionRect.Top + endNewDeltaY;
+                        endPoint.X = Editor.figures[i].PathCopy.GetBounds().Right;
+                    }
+
 
                     if (pointIndex == 7)
                     {
