@@ -36,6 +36,8 @@ namespace MiniGraphicEditor
             Editor.registerFigure(typeof(Turn));
             Editor.registerFigure(typeof(Radio));
             Editor.registerFigure(typeof(Smile));
+            Editor.registerFigure(typeof(Line));
+            Editor.registerFigure(typeof(Ellipse));
             Editor.init();
 
             figureButtons = new Button[Editor.registeredFigures.Length];
