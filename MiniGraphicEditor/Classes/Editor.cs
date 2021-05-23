@@ -85,11 +85,28 @@ namespace MiniGraphicEditor.Classes
 
 
                 
+                if(figures[i].EndPoint.X > figures[i].OriginPoint.X)
+                {
+                    originPoint.X = figures[i].PathCopy.GetBounds().Left + x;
+                    endPoint.X = figures[i].PathCopy.GetBounds().Right + x;
+                } else
+                {
+                    originPoint.X = figures[i].PathCopy.GetBounds().Right + x;
+                    endPoint.X = figures[i].PathCopy.GetBounds().Left + x;
+                }
 
-                originPoint.X = figures[i].PathCopy.GetBounds().Left + x;
-                originPoint.Y = figures[i].PathCopy.GetBounds().Top + y;
-                endPoint.X = figures[i].PathCopy.GetBounds().Right + x;
-                endPoint.Y = figures[i].PathCopy.GetBounds().Bottom + y;
+                if (figures[i].EndPoint.Y > figures[i].OriginPoint.Y)
+                {
+                    originPoint.Y = figures[i].PathCopy.GetBounds().Top + y;
+                    endPoint.Y = figures[i].PathCopy.GetBounds().Bottom + y;
+                }
+                else
+                {
+                    originPoint.Y = figures[i].PathCopy.GetBounds().Bottom + y;
+                    endPoint.Y = figures[i].PathCopy.GetBounds().Top + y;
+                }
+
+                
 
                 figures[i].initCalculations(originPoint, endPoint);
                 Resizer.calculatePoints();
