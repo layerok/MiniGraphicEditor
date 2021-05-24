@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using MiniGraphicEditor.Classes;
 using MiniGraphicEditor.Classes.Figures;
@@ -15,8 +16,10 @@ namespace MiniGraphicEditor
 
             Button[] alignmentButtons = new Button[4];
 
-            String[] alignmentButtonsText = new string[] { "←", "↑", "→", "↓" };
+            PointF handleCenterPoint;
 
+            String[] alignmentButtonsText = new string[] { "←", "↑", "→", "↓" };
+            GraphicsPath rotButton;
 
 
             double pi = Math.PI / 180;
@@ -38,6 +41,10 @@ namespace MiniGraphicEditor
                 Editor.registerFigure(typeof(Line));
                 Editor.registerFigure(typeof(Ellipse));
                 Editor.init();
+
+            
+                rotButton = new GraphicsPath();
+                rotButton.AddEllipse(-20, -20, 40, 40);
 
                 figureButtons = new Button[Editor.registeredFigures.Length];
 
@@ -269,6 +276,16 @@ namespace MiniGraphicEditor
                     return;
                 }
 
+                if (Editor.selectedAmount == 1)
+                {
+
+                    if (rotButton.IsVisible(e.X - handleCenterPoint.X, e.Y - handleCenterPoint.Y))
+                    {
+                        Editor.state = States.ROTATE_SELECTION_BY_MOUSE;
+                        return;
+                    }
+                }
+
 
                 if (Editor.Resizer.checkIfPointWasClicked(e))
                 {
@@ -298,6 +315,20 @@ namespace MiniGraphicEditor
 
             private void EditorForm_MouseMove(object sender, MouseEventArgs e)
             {
+
+                if (Editor.state == States.ROTATE_SELECTION_BY_MOUSE)
+                {
+                    float angle = Editor.getNewAngle(e.Location, Editor.figures[Editor.selectedIndex].CenterPoint);
+                    Editor.figures[Editor.selectedIndex].Angle = (int)angle;
+
+                    PointF startPoint = new PointF(Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Left, Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Top);
+                    PointF endPoint = new PointF(Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Left + Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Width, Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Top + Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Height);
+
+                    Editor.figures[Editor.selectedIndex].initCalculations(startPoint, endPoint);
+                    Invalidate();
+                    return;
+                   }
+
                 if (Editor.figures.Length > 0 && Editor.state == States.MOVE_SELECTION)
                 {
                     Editor.moveSelected((e.X - Editor.pressedPoint.X), (e.Y - Editor.pressedPoint.Y));
@@ -338,7 +369,7 @@ namespace MiniGraphicEditor
             }
             private void EditorForm_MouseUp(object sender, MouseEventArgs e)
             {
-                if (Editor.figures.Length > 0 && Editor.mouseDown == false && Editor.state != States.RESIZE_SELECTION && Editor.state != States.MOVE_SELECTION)
+                if (Editor.figures.Length > 0 && Editor.mouseDown == false && Editor.state != States.RESIZE_SELECTION && Editor.state != States.MOVE_SELECTION && Editor.state != States.ROTATE_SELECTION_BY_MOUSE)
                 {
                     for (i = Editor.figures.Length - 1; i > -1; i--)
                     {
@@ -386,6 +417,7 @@ namespace MiniGraphicEditor
                     if (Editor.figures[i].Selected)
                     {
                         Editor.selectedAmount++;
+                        Editor.selectedIndex = i;
                         rotateSpinnerValue = Editor.figures[i].Angle;
                     }
                 }
@@ -402,14 +434,36 @@ namespace MiniGraphicEditor
 
 
 
-                if (Editor.selectedAmount == 1)
+            if (Editor.selectedAmount == 1)
                 {
                     // Убираем обработчик события, чтобы все выделиные фигуры не приняли угол назначенный в спиннере угла
                     rotateSpinner.ValueChanged -= rotateSpinner_ValueChanged;
                     rotateSpinner.Value = rotateSpinnerValue;
                     rotateSpinner.ValueChanged += rotateSpinner_ValueChanged;
                     rotateSpinner.Enabled = true;
-                }
+
+                    float hg = Editor.Resizer.selectionRect.Height;
+                    float wd = Editor.Resizer.selectionRect.Width;
+
+
+
+                    float rotateCircleRadius = Math.Max((wd + 150) / 2, (hg + 150) / 2);
+
+                    float xOffset = (rotateCircleRadius * 2 - wd) / 2;
+                    float yOffset = (rotateCircleRadius * 2 - hg) / 2;
+
+                    g.DrawEllipse(new Pen(Color.Red, 0), Editor.Resizer.selectionRect.Left - xOffset, Editor.Resizer.selectionRect.Top - yOffset, rotateCircleRadius * 2, rotateCircleRadius * 2);
+
+
+                    handleCenterPoint = Editor.getHandleCenterPoint(Editor.figures[Editor.selectedIndex].CenterPoint, rotateCircleRadius, Editor.figures[Editor.selectedIndex].Angle);
+
+                    g.TranslateTransform(handleCenterPoint.X, handleCenterPoint.Y);
+
+                    g.FillPath(new SolidBrush(Color.Green), rotButton);
+
+                    g.ResetTransform();
+
+            }
                 else
                 {
                     rotateSpinner.Enabled = false;

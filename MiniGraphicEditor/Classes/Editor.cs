@@ -21,6 +21,7 @@ namespace MiniGraphicEditor.Classes
         public int buttonFigureBlockLeft = 600;
 
         public int selectedAmount = 0;
+        public int selectedIndex = 1;
 
         public Figure[]         figures = new Figure[0];
         public Figure           currentFigure;
@@ -144,6 +145,26 @@ namespace MiniGraphicEditor.Classes
             Array.Resize(ref registeredFigures, registeredFigures.Length + 1);
             registeredFigures[registeredFigures.Length - 1] = type;
 
+        }
+
+        public PointF getHandleCenterPoint(PointF centerPoint, float radius, float angle)
+        {
+            PointF hangleCenterPoint = new PointF();
+            hangleCenterPoint.X = (float)(centerPoint.X + radius * Math.Cos(angle * Math.PI / 180));
+            hangleCenterPoint.Y = (float)(centerPoint.Y + radius * Math.Sin(angle * Math.PI / 180));
+
+            return hangleCenterPoint;
+        }
+
+        public float getNewAngle(PointF b2, PointF center)
+        {
+            float angle;
+
+            const double pi2 = 180 / Math.PI;
+
+            angle = -(float)(Math.Atan2(center.Y - center.Y, center.X + 10 - center.X) * pi2 - Math.Atan2(b2.Y - center.Y, b2.X - center.X) * pi2);
+
+            return angle;
         }
 
     }

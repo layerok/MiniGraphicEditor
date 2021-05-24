@@ -13,6 +13,7 @@ namespace MiniGraphicEditor.Classes
         public static string MOVE_SELECTION         = "MOVE_SELECTION";
         public static string RESIZE_SELECTION       = "RESIZE_SELECTION";
         public static string ROTATE_SELECTION       = "ROTATE_SELECTION";
+        public static string ROTATE_SELECTION_BY_MOUSE       = "ROTATE_SELECTION_BY_MOUSE";
         public static string IDLE                   = "IDLE";
     }
 }
