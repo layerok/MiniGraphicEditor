@@ -116,11 +116,11 @@ namespace MiniGraphicEditor.Classes
                             else if (i == 3)
                             {
 
-                                if (Editor.figures[k].OriginPoint.X > Editor.figures[k].EndPoint.X)
+                                if (Editor.figures[k].OriginPoint.Y > Editor.figures[k].EndPoint.Y)
                                 {
-                                    p1.Y = Editor.Resizer.selectionRect.Bottom;
+                                    p1.Y = Editor.Resizer.selectionRect.Bottom ;
                                     p2.Y = Editor.Resizer.selectionRect.Bottom + Editor.figures[k].Height;
-                                }
+                                //}
                                 else
                                 {
                                     p1.Y = Editor.Resizer.selectionRect.Bottom - Editor.figures[k].Height;
