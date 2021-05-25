@@ -120,7 +120,7 @@ namespace MiniGraphicEditor.Classes
                                 {
                                     p1.Y = Editor.Resizer.selectionRect.Bottom ;
                                     p2.Y = Editor.Resizer.selectionRect.Bottom + Editor.figures[k].Height;
-                                //}
+                                }
                                 else
                                 {
                                     p1.Y = Editor.Resizer.selectionRect.Bottom - Editor.figures[k].Height;
