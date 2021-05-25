@@ -178,9 +178,9 @@ namespace MiniGraphicEditor
             // В таком случае сохраняем состояние, по которому будет понятно при движении мышки, что мы перемещаем выделенные фигуры
             for (i = 0; i < Editor.figures.Length; i++)
             {
-                if (Editor.figures[i].Path.IsVisible(e.Location))
+                if (Editor.figures[i].Selected && Editor.figures[i].Path.IsVisible(e.Location))
                 {
-                    Editor.state = States.FIGURE_CLICKED;
+                    Editor.state = States.SELECTED_FIGURE_CLICKED;
                 }
             }
         }
@@ -200,7 +200,7 @@ namespace MiniGraphicEditor
             }
 
             // Двигаем выделенные фигуры
-            if (Editor.state == States.FIGURE_CLICKED)
+            if (Editor.state == States.SELECTED_FIGURE_CLICKED)
             {
                 Editor.state = States.MOVE_SELECTION;
             }
@@ -258,27 +258,24 @@ namespace MiniGraphicEditor
         }
         private void EditorForm_MouseUp(object sender, MouseEventArgs e)
         {
-
-
             Cursor = Cursors.Default;
-
-
-            if (Editor.figures.Length > 0 && Editor.state == States.FIGURE_CLICKED)
+            if (Editor.state != States.MOVE_SELECTION)
             {
-                Editor.state = States.IDLE;
                 for (i = Editor.figures.Length - 1; i > -1; i--)
                 {
                     if (Editor.figures[i].Path.IsVisible(e.Location))
                     {
                         Editor.figures[i].Selected = !Editor.figures[i].Selected;
                         Editor.Resizer.calculatePoints();
-                        Invalidate(); 
+                        Invalidate();
+                        Editor.state = States.IDLE;
                         return;
                     }
                 }
-                
-               
-            } else if (Editor.state != States.RESIZE_SELECTION && Editor.state != States.ROTATE_SELECTION_BY_MOUSE && Editor.state != States.MOVE_SELECTION)
+            }
+
+            // Е
+            if (Editor.state == States.IDLE)
             {
                 for (i = 0; i < Editor.figures.Length; i++) Editor.figures[i].Selected = false;
                 Invalidate();
@@ -299,6 +296,8 @@ namespace MiniGraphicEditor
             }
             Editor.mouseDown = false;
         }
+
+
         private void EditorForm_Paint(object sender, PaintEventArgs e)
         {
             int rotateSpinnerValue = 0;
@@ -413,7 +412,10 @@ namespace MiniGraphicEditor
                 Editor.ctrlPressed = true;
             }
 
-            if (e.KeyCode == Keys.Delete && Editor.figures.Length > 0) Editor.deleteSelected(); Editor.state = States.IDLE;
+            if (e.KeyCode == Keys.Delete && Editor.figures.Length > 0)
+            {
+                Editor.deleteSelected(); Editor.state = States.IDLE;
+            }
 
         }
         private void EditorForm_KeyUp(object sender, KeyEventArgs e)
