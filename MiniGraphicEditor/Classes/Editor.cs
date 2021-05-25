@@ -37,7 +37,7 @@ namespace MiniGraphicEditor.Classes
         public bool mouseDown = false, shiftPressed = false, ctrlPressed = false;
 
 
-        public UIProperties uiProps = new UIProperties();
+        public UIProperties uiProps;
 
         public PointF pressedPoint = new PointF();
 
@@ -46,11 +46,13 @@ namespace MiniGraphicEditor.Classes
             Resizer = new Resizer(this);
             this.form = form;
             Aligner = new Aligner(this);
+            uiProps = new UIProperties(this);
         }
 
         public void init()
         {
             resetSelectedFigure();
+            uiProps.createFigureButtons();
         }
 
         public void resetSelectedFigure()
@@ -167,6 +169,15 @@ namespace MiniGraphicEditor.Classes
             angle = -(float)(Math.Atan2(center.Y - center.Y, center.X + 10 - center.X) * pi2 - Math.Atan2(b2.Y - center.Y, b2.X - center.X) * pi2);
 
             return angle;
+        }
+
+        public void cloneFigures()
+        {
+            for (i = 0; i < figures.Length; i++)
+            {
+                figures[i].PathCopy = figures[i].NotTransformedPath;
+                figures[i].CloneInstance = (Figure)figures[i].Clone();
+            }
         }
 
     }

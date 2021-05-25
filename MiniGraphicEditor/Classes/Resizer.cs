@@ -69,25 +69,17 @@ namespace MiniGraphicEditor.Classes
         public bool checkIfPointWasClicked(MouseEventArgs e)
         {
 
-            for (i = 0; i < this.points.Length; i++)
+            for (i = 0; i < points.Length; i++)
             {
                 if (
-                    e.X >= this.points[i].X &&
-                    e.X <= this.points[i].X + pointSize &&
-                    e.Y >= this.points[i].Y &&
-                    e.Y <= this.points[i].Y + pointSize
+                    e.X >= points[i].X &&
+                    e.X <= points[i].X + pointSize &&
+                    e.Y >= points[i].Y &&
+                    e.Y <= points[i].Y + pointSize
                     )
                 {
+                    initialSelectionRect = getRect();
                     pointIndex = i;
-                    Editor.state = States.RESIZE_SELECTION;
-
-                    for (k = 0; k < Editor.figures.Length; k++)
-                    {
-
-                        if (!Editor.figures[k].Selected) continue;
-                        Editor.figures[k].PathCopy = Editor.figures[k].NotTransformedPath;
-
-                    }
                     return true;
                 }
             }
@@ -95,7 +87,7 @@ namespace MiniGraphicEditor.Classes
             return false;
         }
 
-        public void resize(MouseEventArgs e, EditorForm form)
+        public void resize(MouseEventArgs e)
         {
             PointF delta;
 
@@ -154,10 +146,10 @@ namespace MiniGraphicEditor.Classes
 
             switch(pointIndex)
             {
-                case 1: case 6: form.Cursor = Cursors.SizeNS; break;
-                case 3: case 4: form.Cursor = Cursors.SizeWE; break;
-                case 0: case 7: form.Cursor = Cursors.SizeNWSE; break;
-                case 2: case 5: form.Cursor = Cursors.SizeNESW; break;
+                case 1: case 6: Editor.form.Cursor = Cursors.SizeNS; break;
+                case 3: case 4: Editor.form.Cursor = Cursors.SizeWE; break;
+                case 0: case 7: Editor.form.Cursor = Cursors.SizeNWSE; break;
+                case 2: case 5: Editor.form.Cursor = Cursors.SizeNESW; break;
             }
                 
 
@@ -253,7 +245,7 @@ namespace MiniGraphicEditor.Classes
 
                     Editor.figures[i].initCalculations(startPoint, endPoint);
                 }
-                form.Invalidate();
+                Editor.form.Invalidate();
             }
 
 
