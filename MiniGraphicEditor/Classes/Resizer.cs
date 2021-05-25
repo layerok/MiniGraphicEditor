@@ -155,147 +155,89 @@ namespace MiniGraphicEditor.Classes
                 if (e.Y <= selectionRect.Top + pointSize || e.X <= selectionRect.Left + pointSize) return;
             }
 
-
-            if (pointIndex == 1 || pointIndex == 6)
+            switch(pointIndex)
             {
-                form.Cursor = Cursors.SizeNS;
+                case 1: case 6: form.Cursor = Cursors.SizeNS; break;
+                case 3: case 4: form.Cursor = Cursors.SizeWE; break;
+                case 0: case 7: form.Cursor = Cursors.SizeNWSE; break;
+                case 2: case 5: form.Cursor = Cursors.SizeNESW; break;
             }
-
-            if (pointIndex == 3 || pointIndex == 4)
-            {
-                form.Cursor = Cursors.SizeWE;
-            }
-            if (pointIndex == 0 || pointIndex == 7)
-            {
-                form.Cursor = Cursors.SizeNWSE;
-            }
-            if (pointIndex == 2 || pointIndex == 5)
-            {
-                form.Cursor = Cursors.SizeNESW;
-            }
+                
 
             for (i = 0; i < Editor.figures.Length; i++)
             {
                 if (Editor.figures[i].Selected)
                 {
 
-
-
                     // Логика пересчета точек фигур при ресайзе
-                    float initialHeight = initialSelectionRect.Height;
+                    // Механизм ресайза такой. Узнаем насколько процентов увеличелась высота и ширина. 
+                    // Узнав процент смещаем точки на такой процент
+                    
                     float resizedHeight = initialSelectionRect.Height + delta.Y;
+                    float percentY = (100 * resizedHeight / initialSelectionRect.Height) - 100;
+                    
 
                     float initialWidth = initialSelectionRect.Width;
                     float resizedWidth = initialSelectionRect.Width + delta.X;
+                    float percentX = (100 * resizedWidth / initialSelectionRect.Width) - 100;
+
+                    float originOffsetFromLeft = Editor.figures[i].CloneInstance.OriginPoint.X - initialSelectionRect.X;
+                    float originOffsetFromTop = Editor.figures[i].CloneInstance.OriginPoint.Y - initialSelectionRect.Y;
+
+                    float endOffsetFromLeft = Editor.figures[i].CloneInstance.EndPoint.X - initialSelectionRect.X;
+                    float endOffsetFromTop = Editor.figures[i].CloneInstance.EndPoint.Y - initialSelectionRect.Y;
+
+                    float resizedOriginOffsetX = originOffsetFromLeft / 100 * percentX;
+                    float resizedOriginOffsetY = originOffsetFromTop / 100 * percentY;
+
+                    float resizedEndOffsetX = endOffsetFromLeft / 100 * percentX;
+                    float resizedEndOffsetY = endOffsetFromTop / 100 * percentY;
+
+                    float originLeftX = Editor.figures[i].CloneInstance.OriginPoint.X;
+                    float originLeftY = Editor.figures[i].CloneInstance.OriginPoint.Y;
 
 
-                    // Пропорциональное увеличение только на угловых точках
-                    if (pointIndex == 0 || pointIndex == 2 || pointIndex == 5 || pointIndex == 7)
+                    float endLeftX = Editor.figures[i].CloneInstance.EndPoint.X;
+                    float endLeftY = Editor.figures[i].CloneInstance.EndPoint.Y;
+
+                    if(pointIndex == 0 || pointIndex == 3 || pointIndex == 5)
                     {
-                        resizedHeight = (Editor.shiftPressed) ? Math.Max(resizedHeight, resizedWidth) : resizedHeight;
-                        resizedWidth = (Editor.shiftPressed) ? Math.Max(resizedHeight, resizedWidth) : resizedWidth;
+                        originLeftX -= delta.X;
+                        endLeftX -= delta.X;
+
                     }
 
-                    float originDeltaY = Editor.figures[i].PathCopy.GetBounds().Top - initialSelectionRect.Top;
-                    float endDeltaY = Editor.figures[i].PathCopy.GetBounds().Bottom - initialSelectionRect.Top;
-
-                    float originDeltaX = Editor.figures[i].PathCopy.GetBounds().Left - initialSelectionRect.Left;
-                    float endDeltaX = Editor.figures[i].PathCopy.GetBounds().Right - initialSelectionRect.Left;
-
-                    float originPercentY = 100 * originDeltaY / initialHeight;
-                    float endPercentY = 100 * endDeltaY / initialHeight;
-
-                    float originPercentX = 100 * originDeltaX / initialWidth;
-                    float endPercentX = 100 * endDeltaX / initialWidth;
-
-                    float originNewDeltaY = resizedHeight * originPercentY / 100;
-                    float endNewDeltaY = resizedHeight * endPercentY / 100;
-
-                    float originNewDeltaX = resizedWidth * originPercentX / 100;
-                    float endNewDeltaX = resizedWidth * endPercentX / 100;
-
-
-                    PointF startPoint = new Point();
-                    PointF endPoint = new Point();
-                    float top, left;
-
-                    if (pointIndex == 0)
+                    if (pointIndex == 1 || pointIndex == 0 || pointIndex == 2)
                     {
-                        top = Editor.shiftPressed ? initialSelectionRect.Bottom - resizedHeight : initialSelectionRect.Top - delta.Y;
-                        left = Editor.shiftPressed ? initialSelectionRect.Right - resizedWidth : initialSelectionRect.Left - delta.X;
-
-                        startPoint.Y = top + originNewDeltaY;
-                        startPoint.X = left + originNewDeltaX;
-                        endPoint.Y = top + endNewDeltaY;
-                        endPoint.X = left + endNewDeltaX;
+                        originLeftY -= delta.Y;
+                        endLeftY -= delta.Y;
                     }
 
-
-                    if (pointIndex == 1)
+                    if(pointIndex == 1 || pointIndex == 6)
                     {
-                        startPoint.Y = initialSelectionRect.Top - delta.Y + originNewDeltaY;
-                        startPoint.X = Editor.figures[i].PathCopy.GetBounds().Left;
-                        endPoint.Y = initialSelectionRect.Top - delta.Y + endNewDeltaY;
-                        endPoint.X = Editor.figures[i].PathCopy.GetBounds().Right;
+                        // точки которые ресайзят только по вертикали
+                        resizedEndOffsetX = 0;
+                        resizedOriginOffsetX = 0;
+                    }
+
+                    if (pointIndex == 3 || pointIndex == 4)
+                    {
+                        // точки которые ресайзят только по горизантали
+                        resizedEndOffsetY = 0;
+                        resizedOriginOffsetY = 0;
                     }
 
 
-                    if (pointIndex == 2)
-                    {
-                        top = Editor.shiftPressed ? initialSelectionRect.Bottom - resizedHeight : initialSelectionRect.Top - delta.Y;
-                        left = Editor.shiftPressed ? initialSelectionRect.Left : initialSelectionRect.Left;
+                    PointF startPoint = new PointF();
+                    PointF endPoint = new PointF();
 
-                        startPoint.Y = top + originNewDeltaY;
-                        startPoint.X = left + originNewDeltaX;
-                        endPoint.Y = top + endNewDeltaY;
-                        endPoint.X = left + endNewDeltaX;
-                    }
+                    startPoint.X = originLeftX + resizedOriginOffsetX;
+                    startPoint.Y = originLeftY + resizedOriginOffsetY;
 
-                    if (pointIndex == 3)
-                    {
-                        startPoint.Y = Editor.figures[i].PathCopy.GetBounds().Top;
-                        startPoint.X = (initialSelectionRect.Left - delta.X) + originNewDeltaX;
-                        endPoint.Y = Editor.figures[i].PathCopy.GetBounds().Bottom;
-                        endPoint.X = (initialSelectionRect.Left - delta.X) + endNewDeltaX;
-                    }
-
-                    if (pointIndex == 4)
-                    {
-                        startPoint.Y = Editor.figures[i].PathCopy.GetBounds().Top;
-                        startPoint.X = initialSelectionRect.Left + originNewDeltaX;
-                        endPoint.Y = Editor.figures[i].PathCopy.GetBounds().Bottom;
-                        endPoint.X = initialSelectionRect.Left + endNewDeltaX;
-                    }
-
-                    if (pointIndex == 5)
-                    {
-
-                        top = Editor.shiftPressed ? initialSelectionRect.Top : initialSelectionRect.Top;
-                        left = Editor.shiftPressed ? initialSelectionRect.Right - resizedWidth : initialSelectionRect.Left - delta.X;
-
-                        startPoint.Y = top + originNewDeltaY;
-                        startPoint.X = left + originNewDeltaX;
-                        endPoint.Y = top + endNewDeltaY;
-                        endPoint.X = left + endNewDeltaX;
-                    }
+                    endPoint.X = endLeftX + resizedEndOffsetX;
+                    endPoint.Y = endLeftY + resizedEndOffsetY;
 
 
-                    if (pointIndex == 6)
-                    {
-                        startPoint.Y = initialSelectionRect.Top + originNewDeltaY;
-                        startPoint.X = Editor.figures[i].PathCopy.GetBounds().Left;
-                        endPoint.Y = initialSelectionRect.Top + endNewDeltaY;
-                        endPoint.X = Editor.figures[i].PathCopy.GetBounds().Right;
-                    }
-
-
-                    if (pointIndex == 7)
-                    {
-                        startPoint.Y = initialSelectionRect.Top + originNewDeltaY;
-                        startPoint.X = initialSelectionRect.Left + originNewDeltaX;
-                        endPoint.Y = initialSelectionRect.Top + endNewDeltaY;
-                        endPoint.X = initialSelectionRect.Left + endNewDeltaX;
-                    }
 
                     Editor.figures[i].initCalculations(startPoint, endPoint);
                 }

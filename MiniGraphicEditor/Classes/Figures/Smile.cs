@@ -13,7 +13,7 @@ namespace MiniGraphicEditor.Classes.Figures
 
         public Smile()
         {
-            _points = new PointF[43];
+            _points = new PointF[0];
         }
 
         public override void calculatePoints(PointF originPoint, PointF endPoint)

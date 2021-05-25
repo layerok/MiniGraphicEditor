@@ -304,6 +304,7 @@ namespace MiniGraphicEditor
                 for (i = 0; i < Editor.figures.Length; i++)
                 {
                     Editor.figures[i].PathCopy = Editor.figures[i].NotTransformedPath;
+                    Editor.figures[i].CloneInstance = (Figure) Editor.figures[i].Clone();
                     if (Editor.figures[i].Selected && Editor.figures[i].Path.IsVisible(e.Location))
                     {
                         Editor.state = States.MOVE_SELECTION;
@@ -320,11 +321,7 @@ namespace MiniGraphicEditor
                 {
                     float angle = Editor.getNewAngle(e.Location, Editor.figures[Editor.selectedIndex].CenterPoint);
                     Editor.figures[Editor.selectedIndex].Angle = (int)angle;
-
-                    PointF startPoint = new PointF(Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Left, Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Top);
-                    PointF endPoint = new PointF(Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Left + Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Width, Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Top + Editor.figures[Editor.selectedIndex].NotTransformedPath.GetBounds().Height);
-
-                    Editor.figures[Editor.selectedIndex].initCalculations(startPoint, endPoint);
+                    Editor.figures[Editor.selectedIndex].initCalculations(Editor.figures[Editor.selectedIndex].OriginPoint, Editor.figures[Editor.selectedIndex].EndPoint);
                     Invalidate();
                     return;
                    }

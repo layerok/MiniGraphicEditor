@@ -10,7 +10,7 @@ using System.Drawing.Drawing2D;
 namespace MiniGraphicEditor.Classes
 {
 
-    abstract class Figure
+    abstract class Figure : ICloneable
     {
         protected PointF[] _points;
         protected PointF _centerPoint;
@@ -27,6 +27,7 @@ namespace MiniGraphicEditor.Classes
         protected GraphicsPath _path;
         protected GraphicsPath _notTransformedPath;
         protected GraphicsPath _pathCopy;
+        protected Figure _clone;
 
         public Figure()
         {
@@ -203,6 +204,18 @@ namespace MiniGraphicEditor.Classes
             }
         }
 
+        public Figure CloneInstance
+        {
+            get
+            {
+                return _clone;
+            }
+            set
+            {
+                _clone = value;
+            }
+        }
+
 
         public abstract void calculatePoints(PointF originPoint, PointF endPoint);
 
@@ -238,6 +251,15 @@ namespace MiniGraphicEditor.Classes
             Path.Transform(rotateMatrix);
         }
 
+        #region ICloneable Members
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        #endregion
+
     }
-    
+
 }
