@@ -28,6 +28,7 @@ namespace MiniGraphicEditor
             Editor.registerFigure(typeof(Smile));
             Editor.registerFigure(typeof(Line));
             Editor.registerFigure(typeof(Ellipse));
+            Editor.registerFigure(typeof(Pie));
             Editor.init();
         }
 
@@ -214,7 +215,7 @@ namespace MiniGraphicEditor
             // Если мышка была отжата на фигуре с выделеним, то снимаем выделение
             // Но в случае если мы передвигали фигуру - то мы не хотим, чтобы с фигуры снималось выделения
             // Поэтому проверям состояние
-            if (Editor.state != States.MOVE_SELECTION && Editor.state != States.RESIZE_SELECTION)
+            if (Editor.state != States.MOVE_SELECTION && Editor.state != States.RESIZE_SELECTION && Editor.state != States.ROTATE_SELECTION_BY_MOUSE)
             {
                 bool selectionWasToggled = Editor.Selector.toggle(e.Location);
                 if(selectionWasToggled)
