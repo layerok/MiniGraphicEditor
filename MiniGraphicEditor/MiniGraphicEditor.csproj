@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Aligner.cs" />
+    <Compile Include="Classes\Config.cs" />
     <Compile Include="Classes\Editor.cs" />
     <Compile Include="Classes\Figure.cs" />
     <Compile Include="Classes\Figures\Ellipse.cs" />
@@ -61,7 +62,11 @@
     <Compile Include="Classes\Figures\Lightning.cs" />
     <Compile Include="Classes\Figures\DialogBox.cs" />
     <Compile Include="Classes\Figures\Trapezoid.cs" />
+    <Compile Include="Classes\Drawer.cs" />
     <Compile Include="Classes\Resizer.cs" />
+    <Compile Include="Classes\Mover.cs" />
+    <Compile Include="Classes\Rotator.cs" />
+    <Compile Include="Classes\Selector.cs" />
     <Compile Include="Classes\States.cs" />
     <Compile Include="Classes\UIProperties.cs" />
     <Compile Include="EditorForm.cs">

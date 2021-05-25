@@ -15,7 +15,8 @@ namespace MiniGraphicEditor.Classes
         public RectangleF initialSelectionRect;
         public int pointIndex;
 
-        public int pointSize = 10;
+        public int pointSize = Config.resizeButtonSize;
+        protected Color pointColor = Config.resizeButtonColor;
 
         public Resizer(Editor editor)
         {
@@ -31,7 +32,7 @@ namespace MiniGraphicEditor.Classes
                 {
                     for (j = 0; j < 8; j++)
                     {
-                        g.FillRectangle(new SolidBrush(Color.Blue), this.points[j].X, this.points[j].Y, pointSize, pointSize);
+                        g.FillRectangle(new SolidBrush(pointColor), this.points[j].X, this.points[j].Y, pointSize, pointSize);
                     }
                     break;
                 }
@@ -245,7 +246,7 @@ namespace MiniGraphicEditor.Classes
 
                     Editor.figures[i].initCalculations(startPoint, endPoint);
                 }
-                Editor.form.Invalidate();
+                
             }
 
 

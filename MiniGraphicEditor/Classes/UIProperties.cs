@@ -14,7 +14,7 @@ namespace MiniGraphicEditor.Classes
         Editor Editor;
         Button[] figureButtons;
         public PointF originPoint, endPoint;
-        public float wd, hg;
+        public float wd, hg, rotateSpinnerValue;
 
         int i;
 

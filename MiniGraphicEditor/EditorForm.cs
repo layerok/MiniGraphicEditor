@@ -12,17 +12,6 @@ namespace MiniGraphicEditor
     {
         Editor Editor;
 
-
-
-        
-        PointF handleCenterPoint;
-
-        
-        GraphicsPath rotButton;
-
-
-        double pi = Math.PI / 180;
-
         public EditorForm()
         {
             InitializeComponent();
@@ -40,17 +29,10 @@ namespace MiniGraphicEditor
             Editor.registerFigure(typeof(Line));
             Editor.registerFigure(typeof(Ellipse));
             Editor.init();
-
-
-            rotButton = new GraphicsPath();
-            rotButton.AddEllipse(-20, -20, 40, 40);
-
-            
-
         }
 
         int i, k, j;
-        Graphics g;
+        public Graphics g;
 
 
         private void EditorForm_Shown(object sender, EventArgs e)
@@ -162,26 +144,18 @@ namespace MiniGraphicEditor
                 return;
             }
 
-            // Проверяем, что в текущем выделении находится 1 фигура
-            if (Editor.selectedAmount == 1)
+            // Проверям если был нажат ползунок
+            if (Editor.Rotator.checkIfHandleClicked(Editor.pressedPoint))
             {
-                // Проверяем был ли клик по ползунку вращения
-                if (rotButton.IsVisible(e.X - handleCenterPoint.X, e.Y - handleCenterPoint.Y))
-                {
-                    // Сохраняем состояние, по этому состоянию при движении мышки будет понятно, что мы вращаем фигуру
-                    Editor.state = States.ROTATE_SELECTION_BY_MOUSE;
-                    return;
-                }
+                Editor.state = States.ROTATE_SELECTION_BY_MOUSE;
+                return;
             }
 
             // Проверяем если клик пришелся по выделенной фигуре
             // В таком случае сохраняем состояние, по которому будет понятно при движении мышки, что мы перемещаем выделенные фигуры
-            for (i = 0; i < Editor.figures.Length; i++)
+            if(Editor.Selector.checkIfSelectedFigureClicked(Editor.pressedPoint))
             {
-                if (Editor.figures[i].Selected && Editor.figures[i].Path.IsVisible(e.Location))
-                {
-                    Editor.state = States.SELECTED_FIGURE_CLICKED;
-                }
+                Editor.state = States.SELECTED_FIGURE_CLICKED;
             }
         }
 
@@ -192,56 +166,32 @@ namespace MiniGraphicEditor
             // Вращаем выделенную фигуру ползунком вращенмя
             if (Editor.state == States.ROTATE_SELECTION_BY_MOUSE)
             {
-                float angle = Editor.getNewAngle(e.Location, Editor.figures[Editor.selectedIndex].CenterPoint);
-                Editor.figures[Editor.selectedIndex].Angle = (int)angle;
-                Editor.figures[Editor.selectedIndex].initCalculations(Editor.figures[Editor.selectedIndex].OriginPoint, Editor.figures[Editor.selectedIndex].EndPoint);
+                Editor.Rotator.rotateSelected(e.Location);
                 Invalidate();
                 return;
             }
 
-            // Двигаем выделенные фигуры
+            // Если фигура была нажата и мышку начали двигать
             if (Editor.state == States.SELECTED_FIGURE_CLICKED)
             {
                 Editor.state = States.MOVE_SELECTION;
             }
 
+            // Двигаем выделенные фигуры
             if (Editor.state == States.MOVE_SELECTION)
             {
-                Editor.moveSelected((e.X - Editor.pressedPoint.X), (e.Y - Editor.pressedPoint.Y));
+                Cursor = Cursors.Hand;
+                Editor.Mover.moveSelected((e.X - Editor.pressedPoint.X), (e.Y - Editor.pressedPoint.Y));
+                Editor.Resizer.calculatePoints();
+                Invalidate();
+                return;
             }
 
             // Рисуем новую фигуру
             if (Editor.state == States.DRAW_VIA_MOUSE)
             {
 
-                PointF p1 = new PointF();
-                PointF p2 = new PointF();
-
-
-                if (Editor.ctrlPressed)
-                {
-                    // Если была нажата кнопка ctrl, то смещаем фигуры, так чтобы она была в середине курсора
-                    float diffX = ((e.Location.X - Editor.pressedPoint.X) / 2);
-                    float diffY = ((e.Location.Y - Editor.pressedPoint.Y) / 2);
-
-                    p1.X = Editor.pressedPoint.X + diffX;
-                    p1.Y = Editor.pressedPoint.Y + diffY;
-
-                    p2.X = e.Location.X + diffX;
-                    p2.Y = e.Location.Y + diffY;
-                }
-                else
-                {
-                    // Курсор в левом верхем углу фигуры
-                    p1 = Editor.pressedPoint;
-                    p2 = e.Location;
-                }
-
-                // Для просчета кординат фигуры, нужно знать только 2 точки
-                // Это точка где была изначально нажата мышка
-                // И точка где была отжата мышка
-                Editor.currentFigure.initCalculations(p1, p2);
-
+                Editor.Drawer.drawViaMouse(Editor.pressedPoint, e.Location);
                 Invalidate();
                 return;
             }
@@ -252,6 +202,8 @@ namespace MiniGraphicEditor
                 // Для ресайза понадобится только знать где была изначальна нажата кнопка мышки, это мы сохраняем в Editor.pressedPoint
                 // И где была отжата кнопка мышки. Это мы достанем из e.Location
                 Editor.Resizer.resize(e);
+                Invalidate();
+                return;
             }
 
             
@@ -259,26 +211,28 @@ namespace MiniGraphicEditor
         private void EditorForm_MouseUp(object sender, MouseEventArgs e)
         {
             Cursor = Cursors.Default;
-            if (Editor.state != States.MOVE_SELECTION)
+            // Если мышка была отжата на фигуре с выделеним, то снимаем выделение
+            // Но в случае если мы передвигали фигуру - то мы не хотим, чтобы с фигуры снималось выделения
+            // Поэтому проверям состояние
+            if (Editor.state != States.MOVE_SELECTION && Editor.state != States.RESIZE_SELECTION)
             {
-                for (i = Editor.figures.Length - 1; i > -1; i--)
+                bool selectionWasToggled = Editor.Selector.toggle(e.Location);
+                if(selectionWasToggled)
                 {
-                    if (Editor.figures[i].Path.IsVisible(e.Location))
-                    {
-                        Editor.figures[i].Selected = !Editor.figures[i].Selected;
-                        Editor.Resizer.calculatePoints();
-                        Invalidate();
-                        Editor.state = States.IDLE;
-                        return;
-                    }
+                    Editor.Resizer.calculatePoints();
+                    Invalidate();
+                    Editor.state = States.IDLE;
+                    return;
                 }
+                
             }
 
-            // Е
+            // В случае, если мышка была отжата и состояние до этого момента не как не изменилось, значит нужно снять выделение со всех фигур
             if (Editor.state == States.IDLE)
             {
-                for (i = 0; i < Editor.figures.Length; i++) Editor.figures[i].Selected = false;
+                Editor.Selector.resetAll();
                 Invalidate();
+                return;
             }
 
             Editor.state = States.IDLE;
@@ -300,7 +254,7 @@ namespace MiniGraphicEditor
 
         private void EditorForm_Paint(object sender, PaintEventArgs e)
         {
-            int rotateSpinnerValue = 0;
+            
             g = e.Graphics;
             if (Editor.mouseDown)
             {
@@ -310,22 +264,13 @@ namespace MiniGraphicEditor
                 g.FillPath(new SolidBrush(fillColorButton.BackColor), Editor.currentFigure.Path);
                 g.DrawPath(new Pen(borderColorButton.BackColor, (float)thicknessSpinner.Value), Editor.currentFigure.Path);
             }
-            Editor.selectedAmount = 0;
+            
             if (!(Editor.figures.Length > 0)) return;
 
-            for (i = 0; i < Editor.figures.Length; i++)
-            {
-                if (Editor.figures[i].Selected)
-                {
-                    Editor.selectedAmount++;
-                    Editor.selectedIndex = i;
-                    rotateSpinnerValue = Editor.figures[i].Angle;
-                }
-            }
+            Editor.Selector.updateMeta();
 
             for (i = 0; i < Editor.figures.Length; i++)
             {
-
                 g.FillPath(new SolidBrush(Editor.figures[i].FillColor), Editor.figures[i].Path);
                 g.DrawPath(new Pen(Editor.figures[i].BorderColor, (float)Editor.figures[i].Thickness), Editor.figures[i].Path);
                 if (Editor.state == States.RESIZE_SELECTION) Editor.Resizer.calculatePoints();
@@ -335,48 +280,8 @@ namespace MiniGraphicEditor
 
 
 
-            if (Editor.selectedAmount == 1)
-            {
-                // Убираем обработчик события, чтобы все выделиные фигуры не приняли угол назначенный в спиннере угла
-                rotateSpinner.ValueChanged -= rotateSpinner_ValueChanged;
-                rotateSpinner.Value = rotateSpinnerValue;
-                rotateSpinner.ValueChanged += rotateSpinner_ValueChanged;
-                rotateSpinner.Enabled = true;
-
-                float hg = Editor.Resizer.selectionRect.Height;
-                float wd = Editor.Resizer.selectionRect.Width;
-
-
-
-                float rotateCircleRadius = Math.Max((wd + 150) / 2, (hg + 150) / 2);
-
-                float xOffset = (rotateCircleRadius * 2 - wd) / 2;
-                float yOffset = (rotateCircleRadius * 2 - hg) / 2;
-
-                g.DrawEllipse(new Pen(Color.Red, 0), Editor.Resizer.selectionRect.Left - xOffset, Editor.Resizer.selectionRect.Top - yOffset, rotateCircleRadius * 2, rotateCircleRadius * 2);
-
-
-                handleCenterPoint = Editor.getHandleCenterPoint(Editor.figures[Editor.selectedIndex].CenterPoint, rotateCircleRadius, Editor.figures[Editor.selectedIndex].Angle);
-
-                g.TranslateTransform(handleCenterPoint.X, handleCenterPoint.Y);
-
-                g.FillPath(new SolidBrush(Color.Green), rotButton);
-
-                g.ResetTransform();
-
-            }
-            else
-            {
-                rotateSpinner.Enabled = false;
-                rotateSpinner.ValueChanged -= rotateSpinner_ValueChanged;
-                rotateSpinner.Value = 0;
-                rotateSpinner.ValueChanged += rotateSpinner_ValueChanged;
-
-            }
-
+            Editor.Rotator.showHandle();
             Editor.Aligner.showButtons();
-
-
             Editor.Resizer.showPoints(g);
 
 
@@ -431,23 +336,6 @@ namespace MiniGraphicEditor
             }
         }
 
-        private void rotateSpinner_ValueChanged(object sender, EventArgs e)
-        {
-            int deg = (int)rotateSpinner.Value;
 
-            for (i = 0; i < Editor.figures.Length; i++)
-            {
-                if (!Editor.figures[i].Selected) continue;
-
-                Editor.figures[i].PreviousAngle = Editor.figures[i].Angle;
-                Editor.figures[i].Angle = deg;
-                Editor.figures[i].initCalculations(Editor.figures[i].OriginPoint, Editor.figures[i].EndPoint);
-                Editor.Resizer.calculatePoints();
-            }
-
-            Editor.state = States.ROTATE_SELECTION;
-
-            Invalidate();
-        }
     }
 }

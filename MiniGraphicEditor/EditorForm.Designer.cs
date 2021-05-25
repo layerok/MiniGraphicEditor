@@ -385,7 +385,6 @@
             this.rotateSpinner.Name = "rotateSpinner";
             this.rotateSpinner.Size = new System.Drawing.Size(80, 22);
             this.rotateSpinner.TabIndex = 19;
-            this.rotateSpinner.ValueChanged += new System.EventHandler(this.rotateSpinner_ValueChanged);
             // 
             // EditorForm
             // 
@@ -452,7 +451,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown rotateSpinner;
+        public System.Windows.Forms.NumericUpDown rotateSpinner;
     }
 }
 
