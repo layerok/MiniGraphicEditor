@@ -163,24 +163,26 @@ namespace MiniGraphicEditor.Classes
                     // Механизм ресайза такой. Узнаем насколько процентов увеличелась высота и ширина. 
                     // Узнав процент смещаем точки на такой процент
 
-                    
+                    float initHeight = initialSelectionRect.Height;
+                    float initWidth = initialSelectionRect.Width;
+
+                    float resizedHeight = initHeight + delta.Y;
+                    float resizedWidth = initWidth + delta.X;
+
                     if (Editor.shiftPressed)
                     {
                         // Если мы хотим пропорцианально увеличивать фигуру, то нужно с имитировать что разница по X и по Y одинаковая
                         delta.X = Math.Max(delta.X, delta.Y);
                         delta.Y = Math.Max(delta.X, delta.Y);
+
+                        resizedHeight = Math.Max(resizedHeight, resizedWidth);
+                        resizedWidth = Math.Max(resizedHeight, resizedWidth);
                     }
 
 
-                    float resizedHeight = initialSelectionRect.Height + delta.Y;
-                    float resizedWidth = initialSelectionRect.Width + delta.X;
 
-
-
-                    float percentY = (100 * resizedHeight / initialSelectionRect.Height) - 100;
-                    float percentX = (100 * resizedWidth / initialSelectionRect.Width) - 100;
-
-
+                    float percentY = (100 * resizedHeight / initHeight) - 100;
+                    float percentX = (100 * resizedWidth / initWidth) - 100;
 
 
                     float originOffsetFromLeft = Editor.figures[i].CloneInstance.OriginPoint.X - initialSelectionRect.X;
