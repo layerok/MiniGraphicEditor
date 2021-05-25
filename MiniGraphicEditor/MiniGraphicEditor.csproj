@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Aligner.cs" />
     <Compile Include="Classes\Editor.cs" />
     <Compile Include="Classes\Figure.cs" />
     <Compile Include="Classes\Figures\Ellipse.cs" />

@@ -31,6 +31,7 @@ namespace MiniGraphicEditor.Classes
         public EditorForm form;
 
         public Resizer Resizer;
+        public Aligner Aligner;
         
         public string state = States.IDLE;
         public bool mouseDown = false, shiftPressed = false, ctrlPressed = false;
@@ -44,6 +45,7 @@ namespace MiniGraphicEditor.Classes
         {
             Resizer = new Resizer(this);
             this.form = form;
+            Aligner = new Aligner(this);
         }
 
         public void init()
