@@ -17,9 +17,6 @@ namespace MiniGraphicEditor.Classes
 
         public int pointSize = 10;
 
-
-
-
         public Resizer(Editor editor)
         {
             this.Editor = editor;
@@ -172,14 +169,26 @@ namespace MiniGraphicEditor.Classes
                     // Логика пересчета точек фигур при ресайзе
                     // Механизм ресайза такой. Узнаем насколько процентов увеличелась высота и ширина. 
                     // Узнав процент смещаем точки на такой процент
-                    
-                    float resizedHeight = initialSelectionRect.Height + delta.Y;
-                    float percentY = (100 * resizedHeight / initialSelectionRect.Height) - 100;
-                    
 
-                    float initialWidth = initialSelectionRect.Width;
+                    
+                    if (Editor.shiftPressed)
+                    {
+                        // Если мы хотим пропорцианально увеличивать фигуру, то нужно с имитировать что разница по X и по Y одинаковая
+                        delta.X = Math.Max(delta.X, delta.Y);
+                        delta.Y = Math.Max(delta.X, delta.Y);
+                    }
+
+
+                    float resizedHeight = initialSelectionRect.Height + delta.Y;
                     float resizedWidth = initialSelectionRect.Width + delta.X;
+
+
+
+                    float percentY = (100 * resizedHeight / initialSelectionRect.Height) - 100;
                     float percentX = (100 * resizedWidth / initialSelectionRect.Width) - 100;
+
+
+
 
                     float originOffsetFromLeft = Editor.figures[i].CloneInstance.OriginPoint.X - initialSelectionRect.X;
                     float originOffsetFromTop = Editor.figures[i].CloneInstance.OriginPoint.Y - initialSelectionRect.Y;
@@ -200,7 +209,8 @@ namespace MiniGraphicEditor.Classes
                     float endLeftX = Editor.figures[i].CloneInstance.EndPoint.X;
                     float endLeftY = Editor.figures[i].CloneInstance.EndPoint.Y;
 
-                    if(pointIndex == 0 || pointIndex == 3 || pointIndex == 5)
+
+                    if (pointIndex == 0 || pointIndex == 3 || pointIndex == 5)
                     {
                         originLeftX -= delta.X;
                         endLeftX -= delta.X;
@@ -226,6 +236,8 @@ namespace MiniGraphicEditor.Classes
                         resizedEndOffsetY = 0;
                         resizedOriginOffsetY = 0;
                     }
+
+                    
 
 
                     PointF startPoint = new PointF();

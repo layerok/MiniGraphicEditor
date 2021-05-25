@@ -476,7 +476,7 @@ namespace MiniGraphicEditor
                     {
                         //
                         alignmentButtons[i].Visible = true;
-                        alignmentButtons[i].Location = new Point((int)Editor.Resizer.selectionRect.X - Editor.Resizer.pointSize + (i * 35), (int)Editor.Resizer.selectionRect.Y - (Editor.Resizer.pointSize * 3));
+                        alignmentButtons[i].Location = new Point((int)Editor.Resizer.selectionRect.X - Editor.Resizer.pointSize + (i * 35), (int)Editor.Resizer.selectionRect.Y - (Editor.Resizer.pointSize * 4));
 
 
                     }
