@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace MiniGraphicEditor.Classes.Figures
 {
-    class Pie : Figure
+    class Drop : Figure
     {
 
-        public Pie()
+        public Drop()
         {
             _points = new PointF[3];
         }

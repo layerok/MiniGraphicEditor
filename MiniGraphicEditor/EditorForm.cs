@@ -15,6 +15,11 @@ namespace MiniGraphicEditor
         public EditorForm()
         {
             InitializeComponent();
+
+            // Чтобы фигура появилась как кнопка в UI формы
+            // Ее нужно зарегистировать и разместить в папке bind/debug/icons с названием {className}.png
+            // Например для класса Lightning нужно добавить изображение с именем Lightining.png
+            
             Editor = new Editor(this);
             Editor.registerFigure(typeof(Lightning));
             Editor.registerFigure(typeof(Arrow));
@@ -28,11 +33,14 @@ namespace MiniGraphicEditor
             Editor.registerFigure(typeof(Smile));
             Editor.registerFigure(typeof(Line));
             Editor.registerFigure(typeof(Ellipse));
-            Editor.registerFigure(typeof(Pie));
+            Editor.registerFigure(typeof(Drop));
             Editor.init();
+
+            // Передаваемые параметры не выполняют никакой функции, передаю их просто чтобы запустить функцию
+            updateEditorUIProps(new Button(), new EventArgs());
         }
 
-        int i, k, j;
+        int i;
         public Graphics g;
 
 
@@ -47,7 +55,7 @@ namespace MiniGraphicEditor
         private void updateEditorUIProps(object sender, EventArgs e)
         {
             Editor.uiProps.originPoint.X = (float)numericUpDown1.Value;
-            Editor.uiProps.originPoint.Y = (float)numericUpDown2.Value + this.panel1.Height;
+            Editor.uiProps.originPoint.Y = (float)numericUpDown2.Value + this.panel1.Height + this.menuStrip1.Height;
             Editor.uiProps.wd = (float)numericUpDown4.Value;
             Editor.uiProps.hg = (float)numericUpDown3.Value;
             Editor.uiProps.endPoint.X = Editor.uiProps.originPoint.X + Editor.uiProps.wd;
@@ -124,7 +132,7 @@ namespace MiniGraphicEditor
             // Сохраняем точку где была изначально нажата мышь, она понадобится при перемещении, ресайзе
             Editor.pressedPoint = e.Location;
 
-            // При каждом нажатии мышки копируему существующие фигуры, потому что клоны понадобятся при ресайзе и сдвиге
+            // При каждом нажатии мыши копируему существующие фигуры, потому что клоны понадобятся при ресайзе и сдвиге
             Editor.cloneFigures();
 
             

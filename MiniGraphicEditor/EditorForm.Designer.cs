@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.rotateSpinner = new System.Windows.Forms.NumericUpDown();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
@@ -53,16 +55,14 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.label5 = new System.Windows.Forms.Label();
-            this.rotateSpinner = new System.Windows.Forms.NumericUpDown();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rotateSpinner)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.thicknessSpinner)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.rotateSpinner)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -90,6 +90,34 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1234, 76);
             this.panel1.TabIndex = 0;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(242, 41);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(50, 17);
+            this.label5.TabIndex = 20;
+            this.label5.Text = "Rotate";
+            // 
+            // rotateSpinner
+            // 
+            this.rotateSpinner.Location = new System.Drawing.Point(305, 39);
+            this.rotateSpinner.Margin = new System.Windows.Forms.Padding(4);
+            this.rotateSpinner.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+            this.rotateSpinner.Minimum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            -2147483648});
+            this.rotateSpinner.Name = "rotateSpinner";
+            this.rotateSpinner.Size = new System.Drawing.Size(80, 22);
+            this.rotateSpinner.TabIndex = 19;
             // 
             // button4
             // 
@@ -206,6 +234,11 @@
             this.numericUpDown3.Name = "numericUpDown3";
             this.numericUpDown3.Size = new System.Drawing.Size(80, 22);
             this.numericUpDown3.TabIndex = 5;
+            this.numericUpDown3.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             this.numericUpDown3.ValueChanged += new System.EventHandler(this.updateEditorUIProps);
             // 
             // numericUpDown4
@@ -225,6 +258,11 @@
             this.numericUpDown4.Name = "numericUpDown4";
             this.numericUpDown4.Size = new System.Drawing.Size(80, 22);
             this.numericUpDown4.TabIndex = 4;
+            this.numericUpDown4.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             this.numericUpDown4.ValueChanged += new System.EventHandler(this.updateEditorUIProps);
             // 
             // numericUpDown2
@@ -358,34 +396,6 @@
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(235, 6);
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(242, 41);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(50, 17);
-            this.label5.TabIndex = 20;
-            this.label5.Text = "Rotate";
-            // 
-            // rotateSpinner
-            // 
-            this.rotateSpinner.Location = new System.Drawing.Point(305, 39);
-            this.rotateSpinner.Margin = new System.Windows.Forms.Padding(4);
-            this.rotateSpinner.Maximum = new decimal(new int[] {
-            360,
-            0,
-            0,
-            0});
-            this.rotateSpinner.Minimum = new decimal(new int[] {
-            360,
-            0,
-            0,
-            -2147483648});
-            this.rotateSpinner.Name = "rotateSpinner";
-            this.rotateSpinner.Size = new System.Drawing.Size(80, 22);
-            this.rotateSpinner.TabIndex = 19;
-            // 
             // EditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -410,6 +420,7 @@
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EditorForm_MouseUp);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rotateSpinner)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.thicknessSpinner)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
@@ -417,7 +428,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.rotateSpinner)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
