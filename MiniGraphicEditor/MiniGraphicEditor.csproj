@@ -52,6 +52,7 @@
     <Compile Include="Classes\Figure.cs" />
     <Compile Include="Classes\Figures\Drop.cs" />
     <Compile Include="Classes\Figures\Ellipse.cs" />
+    <Compile Include="Classes\Figures\ClosedBrokenLine.cs" />
     <Compile Include="Classes\Figures\Line.cs" />
     <Compile Include="Classes\Figures\Smile.cs" />
     <Compile Include="Classes\Figures\Radio.cs" />
