@@ -36,6 +36,7 @@ namespace MiniGraphicEditor
             Editor.registerFigure(typeof(Ellipse));
             Editor.registerFigure(typeof(Drop));
             Editor.registerFigure(typeof(ClosedBrokenLine));
+            Editor.registerFigure(typeof(Vase));
             Editor.init();
 
             // Передаваемые параметры не выполняют никакой функции, передаю их просто чтобы запустить функцию

@@ -50,6 +50,8 @@
     <Compile Include="Classes\Config.cs" />
     <Compile Include="Classes\Editor.cs" />
     <Compile Include="Classes\Figure.cs" />
+    <Compile Include="Classes\Figures\Vase.cs" />
+    <Compile Include="Classes\Figures\ArrowDown.cs" />
     <Compile Include="Classes\Figures\Drop.cs" />
     <Compile Include="Classes\Figures\Ellipse.cs" />
     <Compile Include="Classes\Figures\ClosedBrokenLine.cs" />
