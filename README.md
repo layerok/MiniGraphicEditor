@@ -1,1 +1,1 @@
-﻿![Превью программы](https://github.com/adjustmentlayer/MiniGraphicEditor/tree/master/preview.png)
+﻿![Превью программы](https://github.com/adjustmentlayer/MiniGraphicEditor/blob/master/preview.png)
