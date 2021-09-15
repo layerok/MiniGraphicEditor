@@ -26,8 +26,10 @@ namespace MiniGraphicEditor
             Editor.registerFigure(typeof(Arrow));
             Editor.registerFigure(typeof(ArrowFlatEnd));
             Editor.registerFigure(typeof(Trapezoid));
+            Editor.registerFigure(typeof(Trapezoid2));
             Editor.registerFigure(typeof(DialogBox));
             Editor.registerFigure(typeof(Butterfly));
+            Editor.registerFigure(typeof(Butterfly2));
             Editor.registerFigure(typeof(Hedgehog));
             Editor.registerFigure(typeof(Turn));
             Editor.registerFigure(typeof(Radio));

@@ -50,6 +50,8 @@
     <Compile Include="Classes\Config.cs" />
     <Compile Include="Classes\Editor.cs" />
     <Compile Include="Classes\Figure.cs" />
+    <Compile Include="Classes\Figures\Butterfly2.cs" />
+    <Compile Include="Classes\Figures\Trapezoid2.cs" />
     <Compile Include="Classes\Figures\Vase.cs" />
     <Compile Include="Classes\Figures\ArrowDown.cs" />
     <Compile Include="Classes\Figures\Drop.cs" />
@@ -106,8 +108,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="icons\" />
+    <Content Include="icons\Butterfly2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
